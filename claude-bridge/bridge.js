@@ -296,6 +296,65 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // ── /conversation — last N messages from the most-recently-active session ──
+  // Used by the extension's "Compress This Chat" feature to include actual
+  // Claude Code conversation content in the compression prompt.
+  if (req.url?.startsWith("/conversation") && req.method === "GET") {
+    const maxMsgs = 60; // last 60 messages is plenty for compression
+    try {
+      // Find the most recently modified JSONL file across all projects
+      let newestFile = null, newestMtime = 0;
+      const dirs = fs.readdirSync(PROJECTS_DIR).catch?.() ?? (() => {
+        try { return fs.readdirSync(PROJECTS_DIR); } catch { return []; }
+      })();
+      const projectDirs = fs.readdirSync(PROJECTS_DIR);
+      for (const dir of projectDirs) {
+        const full = path.join(PROJECTS_DIR, dir);
+        let entries;
+        try { entries = fs.readdirSync(full); } catch { continue; }
+        for (const entry of entries) {
+          if (!entry.endsWith(".jsonl")) continue;
+          const fp = path.join(full, entry);
+          try {
+            const st = fs.statSync(fp);
+            if (st.mtimeMs > newestMtime) { newestMtime = st.mtimeMs; newestFile = fp; }
+          } catch {}
+        }
+      }
+      if (!newestFile) { res.writeHead(404); res.end(JSON.stringify({ error: "no sessions" })); return; }
+
+      // Read all lines, extract user/assistant messages
+      const raw = fs.readFileSync(newestFile, "utf8");
+      const messages = [];
+      for (const line of raw.split("\n")) {
+        const t = line.trim();
+        if (!t) continue;
+        try {
+          const obj = JSON.parse(t);
+          const msg = obj?.message;
+          if (!msg || !["user","assistant"].includes(msg.role)) continue;
+          const content = msg.content;
+          let text = "";
+          if (typeof content === "string") {
+            text = content;
+          } else if (Array.isArray(content)) {
+            text = content.filter(b => b.type === "text").map(b => b.text || "").join(" ");
+          }
+          text = text.trim();
+          if (text.length > 20) messages.push({ role: msg.role, text: text.slice(0, 2000) });
+        } catch {}
+      }
+      // Return last maxMsgs messages
+      const recent = messages.slice(-maxMsgs);
+      res.writeHead(200);
+      res.end(JSON.stringify({ messages: recent, total: messages.length, file: path.basename(newestFile) }));
+    } catch (e) {
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: String(e) }));
+    }
+    return;
+  }
+
   res.writeHead(404);
   res.end(JSON.stringify({ error: "not found" }));
 });

@@ -182,20 +182,21 @@ chrome.runtime.onInstalled.addListener(async () => {
     periodInMinutes: 7 * 24 * 60,
   });
   chrome.alarms.create("badgeUpdate",   { periodInMinutes: 1 });
-  // bridgeHealth: background health-check so bridgeConnected stays fresh even when sidepanel is closed
-  chrome.alarms.create("bridgeHealth",  { periodInMinutes: 0.25 }); // every 15s
+  // bridgePoll: background polls /tokens every 15s — reliable path for Claude Code token tracking.
+  // Sidepanel's direct fetch to localhost fails silently in some Chrome contexts; background SW is reliable.
+  chrome.alarms.create("bridgePoll",    { periodInMinutes: 0.25 }); // every 15s
   chrome.alarms.create("autoSync",      { periodInMinutes: 30 });
 });
 
 // Also run on startup
 autoSyncUsage();
-pingBridgeHealth();
+pollBridge(); // kick off immediately so tokens show up without waiting 15s
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "weeklyReset")  resetWeeklyTotals();
-  if (alarm.name === "badgeUpdate")  updateBadge();
-  if (alarm.name === "bridgeHealth") pingBridgeHealth();
-  if (alarm.name === "autoSync")     autoSyncUsage();
+  if (alarm.name === "weeklyReset") resetWeeklyTotals();
+  if (alarm.name === "badgeUpdate") updateBadge();
+  if (alarm.name === "bridgePoll")  pollBridge();   // reads /tokens, stores to storage, updates burn rate
+  if (alarm.name === "autoSync")    autoSyncUsage();
 });
 
 // ── Message handler (from content script) ────────────────────────────────────

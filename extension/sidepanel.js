@@ -713,31 +713,52 @@ function init() {
     }
   }
 
-  // ── Step 1 — Compress Context (fully automatic — no paste needed) ────────────
+  // ── Step 1 — Compress Context ─────────────────────────────────────────────────
+  // When bridge is active (Claude Code), fetch the actual conversation from bridge
+  // and include it in the compression prompt. Otherwise use browser session context.
   document.getElementById("btn-memory").addEventListener("click", async () => {
     const btn = document.getElementById("btn-memory");
     if (btn.dataset.locked === "true") { openUpgradeModal(); return; }
 
     btn.style.opacity = "0.6";
     btn.style.pointerEvents = "none";
+    document.getElementById("mem-sub").textContent = "Building compression prompt…";
+
+    // Try to get Claude Code conversation from bridge
+    let bridgeConvo = null;
+    try {
+      const r = await fetch("http://127.0.0.1:7823/conversation", { signal: AbortSignal.timeout(3000) });
+      if (r.ok) bridgeConvo = await r.json();
+    } catch (_) {}
 
     chrome.runtime.sendMessage({ type: "GET_STATS" }, (stats) => {
       const sessionToks = stats?.sessionTokens || 0;
       const responses   = stats?.recentResponses || [];
       const lastReply   = responses[responses.length - 1]?.text || "";
 
-      // Build the compression prompt
-      const prompt = lastReply.length > 100
-        ? `Please write a concise MEMORY.md that captures everything I need to start a new session without losing context.\n\nUse this from our conversation as source material:\n---\n${lastReply.slice(0, 3000)}\n---\n\nFormat:\n# Context\n[2-3 sentences of what we're working on]\n\n# Key decisions\n[bullet list]\n\n# Current state\n[what's done, what's in progress]\n\n# Next steps\n[ordered list]\n\nKeep it under 400 words.`
-        : `Please write a concise MEMORY.md summarising our conversation so far.\n\nFormat:\n# Context\n[2-3 sentences of what we're working on]\n\n# Key decisions\n[bullet list]\n\n# Current state / Next steps\n[bullet list]\n\nKeep it under 400 words.`;
+      let prompt;
 
-      // Auto-send into the current Claude chat — no paste needed
+      if (bridgeConvo?.messages?.length > 2) {
+        // ── Claude Code mode: include actual conversation content ──────────────
+        const convoText = bridgeConvo.messages
+          .slice(-40) // last 40 messages
+          .map(m => `${m.role === "user" ? "Human" : "Assistant"}: ${m.text.slice(0, 800)}`)
+          .join("\n\n");
+
+        prompt = `I'm working in Claude Code and need to compress my session context.\n\nHere is our recent conversation (${bridgeConvo.total} messages total, last 40 shown):\n\n---\n${convoText}\n---\n\nPlease write a concise summary I can use to start a fresh Claude Code session. Format:\n\n# Context\n[2-3 sentences: what project, what we're building]\n\n# Key decisions made\n[bullet list of important choices]\n\n# Current state\n[what's done, what's working, what's broken]\n\n# Next steps\n[ordered action list]\n\nKeep under 500 words. This will be pasted as the opening message of a new session.`;
+      } else if (lastReply.length > 100) {
+        // ── Browser mode: use last Claude response as context ──────────────────
+        prompt = `Please write a concise MEMORY.md that captures everything I need to start a new session without losing context.\n\nUse this from our conversation as source material:\n---\n${lastReply.slice(0, 3000)}\n---\n\nFormat:\n# Context\n[2-3 sentences of what we're working on]\n\n# Key decisions\n[bullet list]\n\n# Current state\n[what's done, what's in progress]\n\n# Next steps\n[ordered list]\n\nKeep it under 400 words.`;
+      } else {
+        prompt = `Please write a concise MEMORY.md summarising our conversation so far.\n\nFormat:\n# Context\n[2-3 sentences of what we're working on]\n\n# Key decisions\n[bullet list]\n\n# Current state / Next steps\n[bullet list]\n\nKeep it under 400 words.`;
+      }
+
+      // Auto-send into the current Claude chat
       chrome.runtime.sendMessage({ type: "COMPRESS_AND_SEND", text: prompt }, (res) => {
         btn.style.opacity = "";
         btn.style.pointerEvents = "";
 
         if (!res?.ok) {
-          // Fallback: copy to clipboard with clear instructions
           navigator.clipboard.writeText(prompt).catch(() => {});
           document.getElementById("mem-sub").textContent = "⚠ Couldn't auto-send — prompt copied, paste & send manually";
           return;
