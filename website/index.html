@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaudePacer — Stop Driving Claude Without a Speedometer</title>
+  <meta
+    name="description"
+    content="ClaudePacer adds a speedometer and gas gauge beside claude.ai so you can see your token burn before you hit your limit."
+  />
+  <meta property="og:title" content="ClaudePacer — Stop Driving Claude Without a Speedometer" />
+  <meta
+    property="og:description"
+    content="A simple live dashboard for Claude users: burn rate, gas gauge, and better pacing."
+  />
+  <meta property="og:image" content="https://claudepacer.com/assets/img/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0D0D14;
+      color: #E8E8F0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    a { color: inherit; }
+    .shell {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217,119,87,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 35% at 85% 20%, rgba(34,197,94,.06) 0%, transparent 70%),
+        #0D0D14;
+    }
+    .card {
+      background: #13131E;
+      border: 1px solid #2A2A3F;
+      border-radius: 20px;
+    }
+    .brand {
+      color: #D97757;
+    }
+    .muted {
+      color: #A2A2BF;
+    }
+    .soft {
+      color: #6B6B90;
+    }
+    .gradient-text {
+      color: #F1F1F7;
+    }
+    .hero-accent {
+      color: #D97757;
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7C5CFF, #5B7CFF);
+      color: #FFFFFF;
+      padding: 16px 28px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(91,124,255,.28);
+    }
+    .btn-secondary {
+      background: #13131E;
+      color: #E8E8F0;
+      padding: 16px 28px;
+      border-radius: 12px;
+      border: 1px solid #2A2A3F;
+    }
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #C7C7DE;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22C55E;
+      box-shadow: 0 0 10px rgba(34,197,94,.75);
+    }
+    .preview-frame {
+      overflow: hidden;
+      border-radius: 24px;
+      background: #101019;
+      border: 1px solid #2A2A3F;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+    }
+    .preview-image {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .two-up {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .three-up {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .mini-card {
+      padding: 22px;
+      border-radius: 18px;
+      background: #13131E;
+      border: 1px solid #2A2A3F;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      margin: 0 0 14px;
+      font-weight: 900;
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      color: #8E8EAE;
+      text-transform: uppercase;
+    }
+    .pro-card {
+      padding: 26px;
+      border-radius: 20px;
+      background: #13131E;
+      border: 1px solid #2A2A3F;
+    }
+    .pro-list {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+    }
+    .pro-item {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #1A1A2A;
+      border: 1px solid #2A2A3F;
+      color: #DADAE6;
+      line-height: 1.6;
+    }
+    nav {
+      background: rgba(13,13,20,.86);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #2A2A3F;
+    }
+    @media (max-width: 920px) {
+      .two-up,
+      .three-up {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 20px, 1080px);
+      }
+      .hero-actions {
+        display: grid !important;
+        grid-template-columns: 1fr;
+      }
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-50">
+    <div class="shell" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;">
+      <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+        <div style="width:38px;height:38px;border-radius:12px;background:#1A1A2A;border:1px solid #2A2A3F;display:flex;align-items:center;justify-content:center;font-size:20px;">⛽</div>
+        <div>
+          <div style="font-size:16px;font-weight:800;">ClaudePacer</div>
+          <div class="soft" style="font-size:11px;">Stop driving Claude blind</div>
+        </div>
+      </a>
+      <a href="download.html" class="btn-primary" style="padding:12px 20px;font-size:14px;">Free - Add to Chrome</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero-bg" style="padding:84px 0 56px;">
+      <div class="shell">
+        <div style="max-width:760px;margin:0 auto 34px;text-align:center;">
+          <div class="chip" style="margin-bottom:18px;">
+            <span class="dot"></span>
+            Live beside claude.ai
+          </div>
+          <h1 class="section-title" style="font-size:clamp(2.5rem,6vw,5rem);margin-bottom:18px;">
+            Stop driving Claude<br />
+            <span class="gradient-text">without a speedometer or gas tank.</span>
+          </h1>
+          <p class="hero-accent" style="margin:0 0 16px;">Watch the gauges. Pace the road.</p>
+          <p class="muted" style="font-size:1.12rem;line-height:1.75;max-width:640px;margin:0 auto 28px;">
+            ClaudePacer adds a simple live dashboard beside claude.ai so you can see burn rate, budget left, and when you are about to hit the wall.
+          </p>
+          <div class="hero-actions" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+            <a href="download.html" class="btn-primary">Free - Add to Chrome</a>
+            <a href="#preview" class="btn-secondary">See preview</a>
+          </div>
+          <p class="soft" style="font-size:12px;margin-top:14px;">No account required · No API key · Works instantly</p>
+        </div>
+
+        <div id="preview" class="preview-frame">
+          <img
+            src="assets/img/home-preview.png"
+            alt="ClaudePacer beside a Claude conversation"
+            class="preview-image"
+            onerror="this.style.display='none';document.getElementById('preview-fallback').style.display='block';"
+          />
+          <div id="preview-fallback" style="display:none;padding:22px;">
+            <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#D97757,#c2603a);display:flex;align-items:center;justify-content:center;font-size:18px;">⛽</div>
+                <div>
+                  <div style="font-size:15px;font-weight:800;">ClaudePacer</div>
+                  <div class="soft" style="font-size:11px;">Stop driving Claude blind</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;color:#22C55E;font-size:13px;font-weight:700;">
+                <span class="dot"></span>
+                Live
+              </div>
+            </div>
+            <div class="two-up" style="gap:16px;align-items:stretch;">
+              <div class="card" style="padding:18px;min-height:260px;">
+                <div class="soft" style="font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:14px;">CLAUDE CHAT</div>
+                <div style="background:#1A1A2A;border-radius:16px;padding:16px;line-height:1.7;font-size:14px;color:#DADAE6;margin-bottom:12px;">
+                  Can you clean up this Python retry logic and tell me if I am close to my usage limit today?
+                </div>
+                <div style="background:#232339;border-radius:16px;padding:16px;line-height:1.7;font-size:14px;color:#E8E8F0;">
+                  You are pacing hot right now. At this speed, you will likely hit your weekly wall on Tuesday.
+                </div>
+              </div>
+              <div class="card" style="padding:18px;min-height:260px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="card" style="padding:14px;text-align:center;background:#171726;">
+                    <div class="soft" style="font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:8px;">BURN RATE</div>
+                    <div style="font-size:2rem;font-weight:900;color:#FF5A5A;">1840</div>
+                    <div class="soft" style="font-size:12px;">tokens/min</div>
+                  </div>
+                  <div class="card" style="padding:14px;text-align:center;background:#171726;">
+                    <div class="soft" style="font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:8px;">WEEKLY</div>
+                    <div style="font-size:2rem;font-weight:900;color:#22C55E;">51%</div>
+                    <div class="soft" style="font-size:12px;">remaining</div>
+                  </div>
+                </div>
+                <div class="card" style="padding:16px;margin-top:12px;background:#171726;">
+                  <div style="font-size:1.3rem;font-weight:900;color:#D97757;margin-bottom:4px;">At this pace you'll hit your limit on Tuesday</div>
+                  <div class="muted" style="font-size:14px;line-height:1.7;">That is the whole point: less guessing, more pacing.</div>
+                </div>
+              </div>
+            </div>
+            <div class="soft" style="font-size:12px;text-align:center;margin-top:14px;">Add `website/assets/img/home-preview.png` to replace this fallback with your real product screenshot.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:28px 0 34px;">
+      <div class="shell three-up">
+        <div class="mini-card">
+          <div class="eyebrow">Speedometer</div>
+          <h2 style="font-size:1.45rem;font-weight:800;margin:10px 0 8px;">See the burn rate live</h2>
+          <p class="muted" style="margin:0;line-height:1.75;">Know how hard you are pushing Claude right now, while you are still in the session.</p>
+        </div>
+        <div class="mini-card">
+          <div class="eyebrow">Gas Tank</div>
+          <h2 style="font-size:1.45rem;font-weight:800;margin:10px 0 8px;">See what is left</h2>
+          <p class="muted" style="margin:0;line-height:1.75;">The weekly gauge helps you pace your work so the rest of the week does not get wrecked.</p>
+        </div>
+        <div class="mini-card">
+          <div class="eyebrow">Pacer</div>
+          <h2 style="font-size:1.45rem;font-weight:800;margin:10px 0 8px;">See the road ahead</h2>
+          <p class="muted" style="margin:0;line-height:1.75;">ClaudePacer tells you when you are heading toward the wall before the wall shows up.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:10px 0 34px;">
+      <div class="shell">
+        <div class="two-up" style="gap:22px;align-items:start;">
+          <div class="preview-frame">
+            <img
+              src="assets/img/gauges-closeup.png"
+              alt="ClaudePacer speedometer and weekly gas gauge"
+              class="preview-image"
+            />
+          </div>
+          <div class="pro-card">
+            <div class="eyebrow">Pro Add-Ons</div>
+            <h2 class="section-title" style="font-size:clamp(1.9rem,4vw,2.6rem);margin-top:10px;">Going too hard? Go Pro and save money and tokens.</h2>
+            <p class="muted" style="font-size:1rem;line-height:1.8;margin:0;">
+              The free product is the dashboard. Pro is the token-saving layer on top.
+            </p>
+            <div class="pro-list">
+              <div class="pro-item"><strong style="color:#F1F1F7;">Auto-Update Memory</strong> compresses context and auto-adds `MEMORY.md` files, so long projects cost less.</div>
+              <div class="pro-item"><strong style="color:#F1F1F7;">Start Fresh + Save</strong> saves the thread to memory and opens a clean chat in one click.</div>
+              <div class="pro-item"><strong style="color:#F1F1F7;">Compress This Chat</strong> cuts token load fast when a conversation starts getting heavy.</div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;">
+              <a href="download.html#upgrade" class="btn-primary">See Pro</a>
+              <a href="download.html" class="btn-secondary">Install Free First</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:34px 0 46px;">
+      <div class="shell">
+        <div class="card" style="padding:28px;">
+          <div class="two-up" style="gap:28px;">
+            <div>
+              <div class="eyebrow">How It Works</div>
+              <h2 class="section-title" style="font-size:clamp(2rem,4vw,3rem);margin-top:10px;">Install once. Open Claude. Keep moving.</h2>
+            </div>
+            <div>
+              <p class="muted" style="font-size:1rem;line-height:1.85;margin:0 0 14px;">
+                ClaudePacer sits beside your normal claude.ai workflow and turns invisible usage into something you can actually read at a glance.
+              </p>
+              <p class="soft" style="font-size:14px;line-height:1.8;margin:0;">That is it. No setup flow, no giant feature wall, no extra complexity.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:10px 0 82px;">
+      <div class="shell">
+        <div class="card hero-bg" style="padding:34px 28px;text-align:center;">
+          <div class="eyebrow" style="margin-bottom:12px;">ClaudePacer</div>
+          <h2 class="section-title" style="margin-bottom:14px;">Stop driving Claude blind.</h2>
+          <p class="muted" style="font-size:1.06rem;line-height:1.8;max-width:620px;margin:0 auto 24px;">
+            Add the speedometer. Add the gas tank. Know when to slow down before Claude slows you down.
+          </p>
+          <div class="hero-actions" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+            <a href="download.html" class="btn-primary">Free - Add to Chrome</a>
+            <a href="pro.html" class="btn-secondary">See Pro</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top:1px solid #2A2A3F;padding:22px 0 28px;">
+    <div class="shell" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;">
+      <p class="soft" style="font-size:13px;margin:0;">© 2026 ClaudePacer</p>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;">
+        <a href="download.html" class="soft" style="font-size:13px;text-decoration:none;">Download</a>
+        <a href="pro.html" class="soft" style="font-size:13px;text-decoration:none;">Pro</a>
+        <a href="privacy.html" class="soft" style="font-size:13px;text-decoration:none;">Privacy</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

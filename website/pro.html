@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pro Knowledge Base — ClaudePacer</title>
+  <meta name="description" content="ClaudePacer Pro documentation, guides, and FAQ for power users." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #0D0D14; color: #E8E8F0; font-family: 'Inter', system-ui, sans-serif; }
+    .card { background: #13131E; border: 1px solid #2A2A3F; border-radius: 18px; }
+    .shell { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
+    nav { background: rgba(13,13,20,.9); backdrop-filter: blur(16px); border-bottom: 1px solid #2A2A3F; }
+    .pro-badge { background: rgba(217,119,87,.15); color: #D97757; border: 1px solid rgba(217,119,87,.3); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .free-badge { background: rgba(34,197,94,.1); color: #22C55E; border: 1px solid rgba(34,197,94,.2); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .sidebar-link { display: block; padding: 7px 12px; border-radius: 8px; font-size: 14px; text-decoration: none; color: #9090A8; transition: all .15s; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(217,119,87,.1); color: #D97757; }
+    .sidebar-section { font-size: 11px; font-weight: 700; color: #6B6B90; letter-spacing: .08em; padding: 16px 12px 6px; }
+    code { background: #22223B; padding: 2px 6px; border-radius: 5px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; color: #D97757; }
+    pre { background: #0D0D14; border: 1px solid #2A2A3F; border-radius: 10px; padding: 16px; overflow-x: auto; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.6; color: #E8E8F0; margin: 16px 0; }
+    .callout { border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.6; margin: 16px 0; }
+    .callout-info { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.2); color: #a5b4fc; }
+    .callout-tip { background: rgba(34,197,94,.07); border: 1px solid rgba(34,197,94,.15); color: #86efac; }
+    .callout-warn { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2); color: #fcd34d; }
+    h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; padding-top: 8px; }
+    h3 { font-size: 1.1rem; font-weight: 700; margin: 20px 0 8px; }
+    p { color: #9090A8; line-height: 1.7; margin-bottom: 12px; font-size: 15px; }
+    ul, ol { color: #9090A8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin-bottom: 12px; }
+    hr { border: none; border-top: 1px solid #2A2A3F; margin: 32px 0; }
+    .btn-primary { background: linear-gradient(135deg, #7C5CFF, #5B7CFF); color: white; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; display: inline-block; font-size: 14px; transition: all .2s; box-shadow: 0 12px 30px rgba(91,124,255,.24); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(91,124,255,.32); }
+    .site-footer { border-top:1px solid #2A2A3F; padding:24px 0 28px; margin-top:60px; }
+    .footer-links { display:flex; gap:18px; flex-wrap:wrap; }
+    @media (max-width: 768px) { .sidebar { display: none; } .shell { width: min(100% - 20px, 1200px); } .footer-row { flex-direction: column; align-items: flex-start !important; } }
+  </style>
+</head>
+<body>
+
+<nav class="sticky top-0 z-50">
+  <div class="shell" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;">
+    <a href="/" class="flex items-center gap-3">
+      <div style="width:38px;height:38px;border-radius:12px;background:#1A1A2A;border:1px solid #2A2A3F;display:flex;align-items:center;justify-content:center;font-size:20px;">⛽</div>
+      <div>
+        <div style="font-weight:800;font-size:15px;">ClaudePacer</div>
+        <div style="font-size:10px;color:#6B6B90;">Pro Knowledge Base</div>
+      </div>
+    </a>
+    <div class="flex items-center gap-4">
+      <a href="/" style="color:#6B6B90;font-size:14px;text-decoration:none;" class="hover:text-white">Home</a>
+      <a href="download.html" class="btn-primary" style="padding:8px 18px;font-size:13px;">Free - Add to Chrome</a>
+    </div>
+  </div>
+</nav>
+
+<div class="shell" style="display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:start;padding:40px 0 0;">
+
+  <!-- Sidebar -->
+  <aside class="sidebar sticky top-24">
+    <div class="sidebar-section">GETTING STARTED</div>
+    <a href="#install" class="sidebar-link">Installation</a>
+    <a href="#first-run" class="sidebar-link">First Run</a>
+    <a href="#demo-mode" class="sidebar-link">Demo Mode</a>
+
+    <div class="sidebar-section">GAUGES</div>
+    <a href="#speedometer" class="sidebar-link">Speedometer</a>
+    <a href="#gas-gauge" class="sidebar-link">Budget Gauge</a>
+    <a href="#prediction" class="sidebar-link">Limit Prediction</a>
+    <a href="#sync" class="sidebar-link">Anthropic Sync</a>
+
+    <div class="sidebar-section">PRO FEATURES</div>
+    <a href="#compress" class="sidebar-link">Compress This Chat</a>
+    <a href="#fresh-chat" class="sidebar-link">Open Fresh Chat</a>
+    <a href="#memory" class="sidebar-link">MEMORY.md System</a>
+
+    <div class="sidebar-section">DESKTOP BRIDGE</div>
+    <a href="#bridge-install" class="sidebar-link">Setup</a>
+    <a href="#bridge-usage" class="sidebar-link">Usage</a>
+
+    <div class="sidebar-section">ADVANCED</div>
+    <a href="#token-accuracy" class="sidebar-link">Token Accuracy</a>
+    <a href="#settings" class="sidebar-link">Settings</a>
+    <a href="#troubleshoot" class="sidebar-link">Troubleshooting</a>
+    <a href="#privacy" class="sidebar-link">Privacy</a>
+  </aside>
+
+  <!-- Main content -->
+  <main style="min-width:0;max-width:720px;">
+
+    <!-- Hero -->
+    <div style="margin-bottom:40px;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.25);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;color:#D97757;margin-bottom:16px;">
+        📖 Pro Knowledge Base
+      </div>
+      <h1 style="font-size:2.2rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">ClaudePacer Documentation</h1>
+      <p style="font-size:1rem;color:#6B6B90;">Everything you need to get the most out of ClaudePacer — from installation to advanced token-saving strategies.</p>
+    </div>
+
+    <!-- ── GETTING STARTED ── -->
+    <section id="install">
+      <h2>Installation</h2>
+      <p>ClaudePacer is a Chrome extension — no account, no API key, no setup wizard required.</p>
+      <ol>
+        <li>Visit the <strong style="color:#E8E8F0;">Chrome Web Store</strong> and search "ClaudePacer" (or use the direct link from the download page).</li>
+        <li>Click <strong style="color:#E8E8F0;">Add to Chrome</strong> → <strong style="color:#E8E8F0;">Add extension</strong>.</li>
+        <li>Open <a href="https://claude.ai" style="color:#D97757;">claude.ai</a>. The side panel opens automatically.</li>
+      </ol>
+      <div class="callout callout-tip">
+        💡 <strong>Tip:</strong> If the side panel doesn't appear, click the ClaudePacer icon in your Chrome toolbar to open it.
+      </div>
+    </section>
+
+    <hr/>
+
+    <section id="first-run">
+      <h2>First Run</h2>
+      <p>When you first open claude.ai after installing, ClaudePacer starts in <strong style="color:#E8E8F0;">Demo Mode</strong> — showing realistic fake data (420 tok/min, 38% used) so you can see the product immediately.</p>
+      <p>Once you <strong style="color:#E8E8F0;">send your first message</strong>, the extension detects a real API response and switches to <strong style="color:#22C55E;">Live mode</strong> automatically. The green dot lights up.</p>
+    </section>
+
+    <hr/>
+
+    <section id="demo-mode">
+      <h2>Demo Mode</h2>
+      <p>Demo mode activates when no real token data has been received yet in the current session. It shows:</p>
+      <ul>
+        <li>420 tok/min burn rate</li>
+        <li>38% weekly budget remaining</li>
+        <li>A "Demo" label in the header</li>
+      </ul>
+      <p>Demo mode is intentional — it makes the extension look great immediately on install, so you can explore the UI before sending any messages.</p>
+    </section>
+
+    <hr/>
+
+    <!-- ── GAUGES ── -->
+    <section id="speedometer">
+      <h2>Speedometer — Burn Rate</h2>
+      <p>The speedometer shows your current <strong style="color:#E8E8F0;">token burn rate</strong> in tokens per minute. It's calculated from a rolling 60-second window of token activity.</p>
+
+      <h3>Color zones</h3>
+      <ul>
+        <li><span style="color:#22C55E;font-weight:600;">Green (0–800 tok/min)</span> — relaxed pace, you have plenty of runway</li>
+        <li><span style="color:#F59E0B;font-weight:600;">Amber (800–2000 tok/min)</span> — active session, monitor your gauge</li>
+        <li><span style="color:#EF4444;font-weight:600;">Red (2000+ tok/min)</span> — burning fast; large inputs or long responses</li>
+      </ul>
+
+      <h3>Why does the needle sometimes jump?</h3>
+      <p>Large input messages (e.g. pasting a whole file into a chat) register as a spike. The needle smooths out as the rolling window advances.</p>
+    </section>
+
+    <hr/>
+
+    <section id="gas-gauge">
+      <h2>Budget Gauge — Weekly / Session</h2>
+      <p>The arc gauge on the right shows how much of your budget remains. Toggle between <strong style="color:#E8E8F0;">Weekly</strong> and <strong style="color:#D97757;">Session</strong> view using the buttons above the gauge.</p>
+
+      <h3>Weekly view</h3>
+      <p>Shows % remaining of your total weekly token budget. Resets on the day configured in Settings (default: Monday). When Anthropic sync is active, this reflects <strong style="color:#E8E8F0;">actual usage data</strong> from Anthropic's servers.</p>
+
+      <h3>Session view</h3>
+      <p>Shows % remaining of the current 5-hour session window. Claude Pro/Max plans reset every ~5 hours. This view helps you pace within a single session.</p>
+    </section>
+
+    <hr/>
+
+    <section id="prediction">
+      <h2>Limit Prediction</h2>
+      <p>Below the gauges, ClaudePacer shows a forward-looking prediction:</p>
+      <div class="card p-4" style="margin:16px 0;font-size:14px;color:#F59E0B;background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.2);">
+        ⚠️ At this pace, you'll hit your weekly limit on <strong>Tuesday at 3 PM</strong>.
+      </div>
+      <p>This is calculated by dividing your remaining budget by your current rolling burn rate. It updates every 30 seconds. Idle periods cause it to extend; heavy sessions cause it to shrink.</p>
+      <div class="callout callout-tip">
+        💡 This is the key insight ClaudePacer provides that no other tool gives you.
+      </div>
+    </section>
+
+    <hr/>
+
+    <section id="sync">
+      <h2>Anthropic Sync</h2>
+      <p>ClaudePacer periodically calls Anthropic's usage endpoint to get your actual plan usage. When this succeeds, the banner shows:</p>
+      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:10px 14px;font-size:13px;color:#22C55E;margin:12px 0;">
+        ⚡ Synced with Anthropic — gauge shows real usage &nbsp; <span style="text-decoration:underline;cursor:pointer;">re-sync</span>
+      </div>
+      <p>Click <strong style="color:#E8E8F0;">re-sync</strong> to force a refresh. If sync fails (e.g. you're logged out), the gauge falls back to estimated values.</p>
+    </section>
+
+    <hr/>
+
+    <!-- ── PRO FEATURES ── -->
+    <section id="compress">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <h2 style="margin:0;">Compress This Chat</h2>
+        <span class="pro-badge">PRO</span>
+      </div>
+      <p>Compress This Chat is a one-click token saver. It sends Claude a structured compression request that:</p>
+      <ol>
+        <li>Summarizes your entire conversation history</li>
+        <li>Preserves all key decisions, code snippets, and open threads</li>
+        <li>Saves the result to your MEMORY.md file</li>
+        <li>Saves 30–55% of context tokens on average</li>
+      </ol>
+
+      <h3>When to use it</h3>
+      <p>Use Compress This Chat when:</p>
+      <ul>
+        <li>Your conversation has gone on for 20+ turns</li>
+        <li>You notice the speedometer climbing (long context = more input tokens per turn)</li>
+        <li>You're approaching your session limit and want to continue in a fresh chat</li>
+      </ul>
+
+      <h3>What it sends to Claude</h3>
+      <p>ClaudePacer injects this compression prompt into your active chat:</p>
+      <pre>Please compress this conversation into a dense context block for MEMORY.md.
+Include: all key decisions made, code changes agreed on, open questions,
+and the current task state. Format as markdown. Be ruthlessly concise.</pre>
+
+      <div class="callout callout-warn">
+        ⚠️ Compression is irreversible in the current session. Claude will respond with the summary — but the original conversation history remains visible above it.
+      </div>
+    </section>
+
+    <hr/>
+
+    <section id="fresh-chat">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <h2 style="margin:0;">Open Fresh Chat</h2>
+        <span class="pro-badge">PRO</span>
+      </div>
+      <p>Open Fresh Chat does two things in sequence:</p>
+      <ol>
+        <li><strong style="color:#E8E8F0;">Saves</strong> — runs the compression prompt and saves the output to MEMORY.md</li>
+        <li><strong style="color:#E8E8F0;">Resets</strong> — opens a new claude.ai conversation with zero token overhead</li>
+      </ol>
+      <p>In the new chat, you paste your MEMORY.md summary and Claude picks up exactly where you left off — with a completely fresh context window.</p>
+
+      <h3>Token savings</h3>
+      <p>A long coding session might accumulate 40,000+ input tokens of context. Starting fresh with a 2,000-token summary means each subsequent message costs 95% less in input tokens.</p>
+    </section>
+
+    <hr/>
+
+    <section id="memory">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <h2 style="margin:0;">MEMORY.md System</h2>
+        <span class="pro-badge">PRO</span>
+      </div>
+      <p>MEMORY.md is a markdown file in your project root (or <code>~/.claude/</code>) that stores compressed conversation context. It's the same convention used by Claude Code's built-in memory system.</p>
+
+      <h3>File structure</h3>
+      <pre># Project Memory
+
+## Active Task
+Building a React dashboard with authentication...
+
+## Key Decisions
+- Using Supabase for auth (not NextAuth)
+- API routes in /app/api/
+- Deployed to Vercel
+
+## Open Questions
+- Should we add rate limiting to the API?
+
+## Last Updated
+2026-04-14 by ClaudePacer</pre>
+
+      <h3>Auto-Update Memory (Pro)</h3>
+      <p>When enabled in Settings, ClaudePacer automatically runs a lightweight compression after each session and updates MEMORY.md. You never have to think about it — context is always preserved.</p>
+    </section>
+
+    <hr/>
+
+    <!-- ── DESKTOP BRIDGE ── -->
+    <section id="bridge-install">
+      <h2>Desktop Bridge — Setup</h2>
+      <p>The Claude Code bridge lets the extension track token usage from the <strong style="color:#E8E8F0;">Claude Code terminal CLI</strong>, not just claude.ai. If you only use claude.ai in the browser, you don't need this.</p>
+
+      <h3>Requirements</h3>
+      <ul>
+        <li>Node.js installed (<code>node --version</code> should work)</li>
+        <li>Claude Code CLI installed (<code>claude --version</code>)</li>
+        <li>macOS or Linux (Windows support planned)</li>
+      </ul>
+
+      <h3>Start the bridge</h3>
+      <p><strong>Option A — Terminal:</strong></p>
+      <pre>cd ~/Documents/ClaudePacer/claude-bridge
+/usr/local/bin/node bridge.js</pre>
+
+      <p><strong>Option B — Double-click:</strong> Find <code>start-bridge.command</code> in Finder and double-click it.</p>
+
+      <div class="callout callout-info">
+        ℹ️ The bridge serves token deltas at <code>http://127.0.0.1:7823/tokens</code>. The extension polls this endpoint every 60 seconds.
+      </div>
+    </section>
+
+    <hr/>
+
+    <section id="bridge-usage">
+      <h2>Desktop Bridge — Usage</h2>
+      <p>When the bridge is running and the extension detects it, a chip appears in the side panel:</p>
+      <div class="card p-3" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#818CF8;">
+        ⌨️ Claude Code connected
+      </div>
+      <p style="margin-top:12px;">Token usage from your terminal sessions is merged into the same speedometer and budget gauge. The weekly total reflects <em>all</em> Claude usage — browser + desktop.</p>
+
+      <h3>Stopping the bridge</h3>
+      <p>Press <code>Ctrl+C</code> in the terminal where the bridge is running. The extension will show the chip as disconnected after the next polling interval.</p>
+    </section>
+
+    <hr/>
+
+    <!-- ── ADVANCED ── -->
+    <section id="token-accuracy">
+      <h2>Token Accuracy</h2>
+      <p>ClaudePacer's token counts are <strong style="color:#E8E8F0;">estimated, not exact</strong>. Here's why and how accurate they are in practice:</p>
+
+      <h3>The technical challenge</h3>
+      <p>Claude.ai's internal SSE stream strips the <code>usage</code> fields that Anthropic's standard API includes. There's no <code>input_tokens</code> or <code>output_tokens</code> field in the stream — only raw text deltas.</p>
+
+      <h3>How estimation works</h3>
+      <ul>
+        <li><strong style="color:#E8E8F0;">Output tokens:</strong> Accumulated text from <code>content_block_delta</code> events ÷ 4</li>
+        <li><strong style="color:#E8E8F0;">Input tokens:</strong> POST request body text length ÷ 4</li>
+        <li><strong style="color:#E8E8F0;">Gas gauge:</strong> Synced from Anthropic's actual usage API (exact) when available</li>
+      </ul>
+
+      <h3>Practical accuracy</h3>
+      <p>The ÷4 heuristic is widely used and generally within 10–15% of actual token counts for English text. For code or non-English text, variance may be higher. The speedometer trend is reliable even when absolute numbers aren't perfect.</p>
+
+      <div class="callout callout-info">
+        🔬 <strong>Better accuracy planned:</strong> We're investigating the <code>chrome.debugger</code> API and network-level interception for exact token counts in a future version.
+      </div>
+    </section>
+
+    <hr/>
+
+    <section id="settings">
+      <h2>Settings</h2>
+      <p>Open Settings from the gear icon in the side panel, or by right-clicking the extension icon → Options.</p>
+
+      <h3>Available settings</h3>
+      <ul>
+        <li><strong style="color:#E8E8F0;">Weekly token limit</strong> — set your plan's total weekly budget</li>
+        <li><strong style="color:#E8E8F0;">Alert threshold</strong> — get warned when you've used X% of your budget</li>
+        <li><strong style="color:#E8E8F0;">Week start day</strong> — choose which day your week resets (default: Monday)</li>
+        <li><strong style="color:#E8E8F0;">Session usage sync</strong> — enable/disable Anthropic API sync for the gas gauge</li>
+      </ul>
+    </section>
+
+    <hr/>
+
+    <section id="troubleshoot">
+      <h2>Troubleshooting</h2>
+
+      <h3>Side panel doesn't open</h3>
+      <p>Click the ClaudePacer icon in Chrome's toolbar. If you don't see it, click the puzzle piece icon and pin ClaudePacer.</p>
+
+      <h3>Gauges stuck in Demo mode</h3>
+      <p>This means no real API responses have been detected. Try: reload the claude.ai tab, send a message, and wait 5 seconds. If still stuck, go to <code>chrome://extensions</code> → click ↺ on ClaudePacer to reload the extension.</p>
+
+      <h3>Green dot stays grey (Idle)</h3>
+      <p>The dot only goes green during an active streaming response. If you're between messages, idle is correct. It will update within seconds of your next message.</p>
+
+      <h3>Bridge not connecting</h3>
+      <p>Make sure the bridge is running (<code>node bridge.js</code> in the <code>claude-bridge/</code> folder). Check that nothing else is using port 7823. The extension polls every 60 seconds, so wait up to a minute after starting the bridge.</p>
+
+      <h3>Token counts seem very high</h3>
+      <p>In project-heavy chats, the <em>entire project context</em> is sent with each message. A project with 50 files can add 100,000+ input tokens per turn. This is real — ClaudePacer is accurately showing you the cost of large project contexts.</p>
+    </section>
+
+    <hr/>
+
+    <section id="privacy">
+      <h2>Privacy</h2>
+      <p>ClaudePacer is designed to be private by default:</p>
+      <ul>
+        <li>Your conversation content is <strong style="color:#E8E8F0;">never read or stored</strong> — only text length is measured</li>
+        <li>Token counts are stored in <code>chrome.storage.local</code> — only in your browser</li>
+        <li>No analytics, no crash reporting, no telemetry</li>
+        <li>The bridge only reads <code>.jsonl</code> file sizes and timestamps — not content</li>
+        <li>The Anthropic sync call is made from your browser using your existing session — no credentials are stored by ClaudePacer</li>
+      </ul>
+      <p>See the full <a href="privacy.html" style="color:#D97757;">Privacy Policy</a> for details.</p>
+    </section>
+
+    <hr/>
+
+    <!-- CTA -->
+    <div class="card p-8 text-center" style="margin-top:40px;border-color:rgba(217,119,87,.3);">
+      <div style="font-size:36px;margin-bottom:12px;">🏎️</div>
+      <h3 style="font-size:1.4rem;font-weight:800;margin-bottom:8px;">Ready to upgrade to Pro?</h3>
+      <p>Unlock Compress This Chat, Open Fresh Chat, and Auto-Update Memory for a one-time $19.</p>
+      <a href="download.html#upgrade" class="btn-primary" style="margin-top:16px;">Upgrade to Pro — $19</a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="shell footer-row" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;">
+    <p style="color:#6B6B90;font-size:13px;margin:0;">© 2026 ClaudePacer</p>
+    <div class="footer-links">
+      <a href="/" style="color:#6B6B90;text-decoration:none;font-size:13px;">Home</a>
+      <a href="download.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Download</a>
+      <a href="pro.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Pro</a>
+      <a href="privacy.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Privacy</a>
+      <a href="mailto:pacer@claudepacer.com" style="color:#6B6B90;text-decoration:none;font-size:13px;">pacer@claudepacer.com</a>
+      <a href="https://github.com/claudepacer/claudepacer" style="color:#6B6B90;text-decoration:none;font-size:13px;">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Highlight active sidebar link based on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.sidebar-link');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+    links.forEach(l => {
+      l.classList.remove('active');
+      if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

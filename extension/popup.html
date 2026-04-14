@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClaudePacer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">⛽</div>
+    <div>
+      <div class="logo-name">ClaudePacer</div>
+      <div class="logo-sub">Stop driving Claude blind</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="live-dot" class="live-dot" title="Tracking active"></div>
+    <div id="tier-badge" class="badge free">Free</div>
+  </div>
+</header>
+
+<!-- ── No-activity state ─────────────────────────────────────────────────── -->
+<div id="no-data">
+  <div class="empty-fuel">⛽</div>
+  <p class="empty-title">Tank is empty</p>
+  <p class="empty-body">Open <a href="https://claude.ai" target="_blank">claude.ai</a> and start chatting — your speedometer and gas gauge will appear here in real time.</p>
+</div>
+
+<!-- ── Main dashboard ────────────────────────────────────────────────────── -->
+<div id="dashboard" class="hidden">
+
+  <!-- Gauges row -->
+  <div class="gauges-row">
+
+    <!-- ── Speedometer ── -->
+    <div class="gauge-panel">
+      <div class="panel-label">Burn Rate</div>
+
+      <svg id="speedo" viewBox="0 0 220 160" class="speedo-svg">
+        <defs>
+          <filter id="glow-needle">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-arc">
+            <feGaussianBlur stdDeviation="3" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="pivot-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#22223B"/>
+            <stop offset="100%" stop-color="#13131E"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Track shadow -->
+        <path id="s-track" fill="none" stroke="#1A1A2E" stroke-width="16" stroke-linecap="round"/>
+
+        <!-- Color zones (dim) -->
+        <path id="s-z-green" fill="none" stroke="#22C55E" stroke-width="14" opacity=".18"/>
+        <path id="s-z-amber" fill="none" stroke="#F59E0B" stroke-width="14" opacity=".18"/>
+        <path id="s-z-red"   fill="none" stroke="#EF4444" stroke-width="14" opacity=".18"/>
+
+        <!-- Active arc -->
+        <path id="s-fill" fill="none" stroke-width="14" stroke-linecap="round" filter="url(#glow-arc)"/>
+
+        <!-- Tick marks -->
+        <g id="s-ticks" stroke="#2D2D4A" stroke-width="1.5"/>
+
+        <!-- Needle -->
+        <polygon id="s-needle" filter="url(#glow-needle)" style="transition:all 1s cubic-bezier(.34,1.4,.64,1)"/>
+
+        <!-- Pivot -->
+        <circle cx="110" cy="120" r="11" fill="url(#pivot-grad)" id="s-pivot-ring"/>
+        <circle cx="110" cy="120" r="4"  id="s-pivot-dot"/>
+
+        <!-- Value -->
+        <text id="s-val" x="110" y="102" text-anchor="middle"
+              font-family="Inter,sans-serif" font-size="26" font-weight="800" fill="white">0</text>
+        <text x="110" y="116" text-anchor="middle"
+              font-family="Inter,sans-serif" font-size="9" fill="#4A4A70">tokens / min</text>
+      </svg>
+
+      <!-- Speed label row -->
+      <div class="speedo-footer">
+        <span id="s-label" class="s-label">Idle</span>
+        <span id="s-accel" class="s-accel">→</span>
+        <span id="s-mult"  class="s-mult">—</span>
+      </div>
+    </div>
+
+    <!-- ── Gas Gauge ── -->
+    <div class="gauge-panel">
+      <div class="panel-label">Weekly Budget</div>
+
+      <div class="gas-wrap">
+        <svg viewBox="0 0 160 160" class="gas-svg">
+          <defs>
+            <filter id="glow-gas">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Track -->
+          <circle id="g-track" cx="80" cy="80" r="60" fill="none"
+                  stroke="#1A1A2E" stroke-width="14" stroke-linecap="round"/>
+          <!-- BG zone -->
+          <circle id="g-bg" cx="80" cy="80" r="60" fill="none"
+                  stroke-width="12" stroke-linecap="round" opacity=".2"/>
+          <!-- Fill -->
+          <circle id="g-fill" cx="80" cy="80" r="60" fill="none"
+                  stroke-width="12" stroke-linecap="round"
+                  filter="url(#glow-gas)"
+                  style="transition: stroke-dasharray 1.2s ease-out, stroke .5s ease"/>
+          <!-- Icon -->
+          <text x="80" y="67" text-anchor="middle" font-size="22">⛽</text>
+          <!-- Percent -->
+          <text id="g-pct" x="80" y="92" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="22" font-weight="800" fill="white">0%</text>
+          <text x="80" y="106" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="9" fill="#4A4A70">used this week</text>
+        </svg>
+
+        <div id="g-days"    class="g-days">— days left</div>
+        <div id="g-urgency" class="g-urgency"></div>
+        <div id="g-tokens"  class="g-tokens">0 / 1M tokens</div>
+      </div>
+    </div>
+
+  </div><!-- /gauges-row -->
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-lbl">Session</div>
+      <div id="st-session" class="stat-val">—</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <div class="stat-lbl">This Week</div>
+      <div id="st-week" class="stat-val">—</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <div class="stat-lbl">Messages</div>
+      <div id="st-msgs" class="stat-val">—</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <div class="stat-lbl">Week Resets</div>
+      <div id="st-reset" class="stat-val">—</div>
+    </div>
+  </div>
+
+  <!-- Memory tools -->
+  <div class="section memory-section">
+    <div class="section-head">
+      <span class="section-title">🧠 Memory Tools</span>
+      <span id="mem-badge" class="mem-badge locked">🔒 Pro only</span>
+    </div>
+    <div class="mem-btns">
+      <!-- Auto-Update Memory -->
+      <button id="btn-memory" class="mem-btn" data-locked="true">
+        <div class="mem-icon">🧠</div>
+        <div class="mem-text">
+          <div class="mem-title">Auto-Update Memory File</div>
+          <div class="mem-sub">Compress context · typically saves 30–55%</div>
+        </div>
+        <div id="mem-saving" class="mem-saving hidden">
+          <div class="spinner"></div>
+        </div>
+      </button>
+
+      <!-- Start Fresh + Save -->
+      <button id="btn-fresh" class="mem-btn mem-green" data-locked="true">
+        <div class="mem-icon">✨</div>
+        <div class="mem-text">
+          <div class="mem-title">Start Fresh + Save</div>
+          <div class="mem-sub">Save thread to memory · open clean chat</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Upgrade CTA -->
+    <button id="btn-upgrade" class="upgrade-btn">
+      Unlock Memory Tools — $19 lifetime
+    </button>
+
+    <!-- Success card (hidden until after a save) -->
+    <div id="save-result" class="save-result hidden">
+      <div class="save-result-header">✅ Memory Updated!</div>
+      <div class="save-result-big" id="save-tokens-saved">—</div>
+      <div class="save-result-sub" id="save-pct-saved">—% smaller context</div>
+      <div class="save-before-after">
+        <div class="ba-cell">
+          <div class="ba-lbl">Before</div>
+          <div id="save-before" class="ba-val muted">—</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell">
+          <div class="ba-lbl">After</div>
+          <div id="save-after" class="ba-val green">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referral -->
+  <div class="section referral-section">
+    <div class="ref-header">🎁 <strong>Refer a friend</strong> — you both save $5</div>
+    <div class="ref-row">
+      <input id="ref-url" class="ref-input" readonly />
+      <button id="btn-copy" class="copy-btn">Copy</button>
+    </div>
+    <div class="ref-hint">Share your link · they pay $14 · you get $5 off your next purchase</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <button id="btn-settings" class="foot-link">⚙ Settings</button>
+    <span class="foot-sep">·</span>
+    <button id="btn-openside" class="foot-link">Open side panel</button>
+    <span class="foot-sep">·</span>
+    <button id="btn-reset" class="foot-link danger">Reset week</button>
+  </div>
+
+</div><!-- /dashboard -->
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>

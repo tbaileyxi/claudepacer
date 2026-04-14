@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClaudePacer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">⛽</div>
+    <div>
+      <div class="logo-name">ClaudePacer</div>
+      <div class="logo-sub">Stop driving Claude blind</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="live-dot" class="live-dot"></div>
+    <div id="live-label" class="live-label">Demo</div>
+    <div id="tier-badge" class="badge free">Free</div>
+  </div>
+</header>
+
+<!-- ── Demo banner ───────────────────────────────────────────────────────── -->
+<div id="demo-banner" class="demo-banner">
+  <span>⚡ Demo mode — send a message on claude.ai to see live data</span>
+  <button id="btn-reconnect" class="btn-reconnect" title="Re-inject the token interceptor into open claude.ai tabs">🔌 Reconnect</button>
+</div>
+
+<!-- ── Interceptor warning (shown when live data exists but interceptor went dark) -->
+<div id="interceptor-warn" class="interceptor-warn hidden">
+  ⚠ Token interceptor not detected — <button id="btn-reconnect-live" class="btn-reconnect-inline">Reconnect now</button>
+</div>
+
+<!-- ── Calibration banner ─────────────────────────────────────────────────── -->
+<div id="cal-banner" class="cal-banner hidden"></div>
+
+<!-- ── Source bar (shown when live) ──────────────────────────────────────── -->
+<div id="source-bar" class="source-bar hidden">
+  <span id="src-browser" class="src-chip src-browser hidden">🌐 Browser</span>
+  <span id="src-bridge"  class="src-chip src-bridge  hidden">⌨️ Claude Code</span>
+  <button id="btn-start-bridge" class="src-chip src-bridge-cta hidden">+ Connect Desktop</button>
+</div>
+
+<!-- ── Burn-rate upsell hint (free tier, medium/high burn) ─────────────── -->
+<div id="burn-hint" class="burn-hint hidden"></div>
+
+<!-- ── Gauges ────────────────────────────────────────────────────────────── -->
+<div class="gauges-row">
+
+  <!-- Speedometer -->
+  <div class="gauge-card">
+    <div class="card-label">Burn Rate</div>
+    <svg id="speedo" viewBox="0 0 240 170" class="speedo-svg">
+      <defs>
+        <filter id="gn"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="ga"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="pg"><stop offset="0%" stop-color="#22223B"/><stop offset="100%" stop-color="#13131E"/></radialGradient>
+      </defs>
+      <path id="s-track"   fill="none" stroke="#1A1A2E"  stroke-width="16" stroke-linecap="round"/>
+      <path id="s-z-green" fill="none" stroke="#22C55E"  stroke-width="14" opacity=".18"/>
+      <path id="s-z-amber" fill="none" stroke="#F59E0B"  stroke-width="14" opacity=".18"/>
+      <path id="s-z-red"   fill="none" stroke="#EF4444"  stroke-width="14" opacity=".18"/>
+      <path id="s-fill"    fill="none" stroke-width="14" stroke-linecap="round" filter="url(#ga)"/>
+      <g    id="s-ticks"/>
+      <polygon id="s-needle-ghost" opacity="0" style="transition:all 0.3s ease-out"/>
+      <polygon id="s-needle" filter="url(#gn)" style="transition:all 1.2s cubic-bezier(.34,1.4,.64,1)"/>
+      <circle cx="120" cy="130" r="12" fill="url(#pg)" id="s-pr" stroke-width="2.5"/>
+      <circle cx="120" cy="130" r="4"  id="s-pd"/>
+      <text id="s-val" x="120" y="112" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="30" font-weight="800" fill="white">0</text>
+      <text x="120" y="126" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">tokens / min</text>
+    </svg>
+    <div class="speedo-footer">
+      <span id="s-label" class="s-label">Idle</span>
+      <span id="s-accel" class="s-accel">→</span>
+      <span id="s-mult"  class="s-mult">—</span>
+    </div>
+  </div>
+
+  <!-- Gas Gauge -->
+  <div class="gauge-card">
+    <div class="card-label gauge-toggle-row">
+      <button id="gtog-week" class="gtog active">Weekly</button>
+      <button id="gtog-sess" class="gtog">Session</button>
+    </div>
+    <svg viewBox="0 0 180 180" class="gas-svg">
+      <defs>
+        <filter id="gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <circle id="g-track" cx="90" cy="90" r="68" fill="none" stroke="#1A1A2E" stroke-width="15" stroke-linecap="round"/>
+      <circle id="g-bg"    cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round" opacity=".2"/>
+      <circle id="g-fill"  cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round"
+              filter="url(#gg)" style="transition:stroke-dasharray 1.2s ease-out,stroke .5s"/>
+      <text x="90" y="76"  text-anchor="middle" font-size="26">⛽</text>
+      <text id="g-pct" x="90" y="104" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="28" font-weight="800" fill="white">0%</text>
+      <text x="90" y="120" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">remaining</text>
+    </svg>
+    <div id="g-days"    class="g-days">— days left at this pace</div>
+    <div id="g-urgency" class="g-urgency"></div>
+    <div id="g-tokens"  class="g-tokens">0 / 1M tokens</div>
+  </div>
+
+</div><!-- /gauges-row -->
+
+<!-- ── Session window bar ─────────────────────────────────────────────────── -->
+<div id="session-bar" class="session-bar hidden">
+  <div class="sbar-head">
+    <span class="sbar-label">5-hr Session Window</span>
+    <span id="sbar-reset" class="sbar-reset">—</span>
+  </div>
+  <div class="sbar-track">
+    <div id="sbar-fill" class="sbar-fill" style="width:0%"></div>
+  </div>
+  <div class="sbar-foot">
+    <span id="sbar-pct" class="sbar-pct">—% used</span>
+    <span id="sbar-warn" class="sbar-warn"></span>
+  </div>
+</div>
+
+
+<!-- Pro Tools -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">💰 Token Savers</span>
+    <span id="mem-badge" class="mem-badge locked">🔒 Pro</span>
+  </div>
+  <div class="sec-sub">Stretch your weekly budget · stay in limits longer</div>
+
+  <div class="mem-btns">
+    <!-- Step 1 -->
+    <button id="btn-memory" class="mem-btn" data-locked="true">
+      <div class="mem-icon">🧠</div>
+      <div class="mem-text">
+        <div class="mem-title"><span class="step-num-inline">1</span> Compress This Chat</div>
+        <div class="mem-sub" id="mem-sub">Sends a compression request to Claude automatically</div>
+      </div>
+    </button>
+
+    <!-- Connector — hidden until Step 1 is done -->
+    <div id="step-connector" class="step-connector hidden">
+      <div class="step-connector-line"></div>
+      <div class="step-connector-label">⏳ Waiting for Claude's memory summary above…</div>
+      <div class="step-connector-line"></div>
+    </div>
+
+    <!-- Step 2 — locked until Step 1 is clicked and Claude responds -->
+    <button id="btn-fresh" class="mem-btn" data-locked="true" data-step2="locked">
+      <div class="mem-icon">✨</div>
+      <div class="mem-text">
+        <div class="mem-title"><span class="step-num-inline">2</span> Open Fresh Chat</div>
+        <div class="mem-sub" id="fresh-sub">Opens new chat with your compressed context loaded in</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Success card -->
+  <div id="save-result" class="save-result hidden">
+    <div id="save-header" class="save-header">—</div>
+    <div id="save-big"    class="save-big">—</div>
+    <div id="save-sub"    class="save-sub">—</div>
+    <div class="save-ba">
+      <div class="ba"><div class="ba-lbl">Before</div><div id="ba-before" class="ba-val dim">—</div></div>
+      <div class="ba-arrow">→</div>
+      <div class="ba"><div class="ba-lbl">After</div><div id="ba-after" class="ba-val green">—</div></div>
+    </div>
+  </div>
+
+  <button id="btn-upgrade" class="upgrade-btn">
+    Unlock Token Savers — $19 one-time, lifetime access ✦
+  </button>
+</div>
+
+<!-- Referral -->
+<div class="section ref-section">
+  <div class="ref-head">🎁 <strong>Refer a friend</strong> — you both save $5</div>
+  <div class="ref-row">
+    <input id="ref-url" class="ref-input" readonly />
+    <button id="btn-copy" class="copy-btn">Copy</button>
+  </div>
+  <div class="ref-hint">Share your link · they pay $14 · you get $5 off your next purchase</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <button id="btn-settings" class="foot-btn">⚙ Settings</button>
+  <span class="foot-sep">·</span>
+  <button id="btn-setup-guide" class="foot-btn">Setup guide</button>
+  <span class="foot-sep">·</span>
+  <button id="btn-reset" class="foot-btn danger">Reset week</button>
+</div>
+
+<!-- ── Onboarding overlay (first-run only) ────────────────────────────────── -->
+<div id="onboarding" class="onboard-overlay hidden">
+
+  <!-- Screen 1: Welcome -->
+  <div id="ob-screen-1" class="onboard-screen">
+    <div class="ob-logo">⛽</div>
+    <div class="ob-title">Welcome to ClaudePacer</div>
+    <div class="ob-sub">Your speedometer &amp; gas gauge for Claude usage</div>
+    <div class="ob-question">How do you use Claude?</div>
+    <button class="ob-choice" id="ob-browser-only">
+      <div class="ob-choice-icon">🌐</div>
+      <div>
+        <div class="ob-choice-title">Just claude.ai in the browser</div>
+        <div class="ob-choice-sub">I chat at claude.ai — no terminal</div>
+      </div>
+    </button>
+    <button class="ob-choice" id="ob-also-code">
+      <div class="ob-choice-icon">⌨️</div>
+      <div>
+        <div class="ob-choice-title">I also use Claude Code in the terminal</div>
+        <div class="ob-choice-sub">I run the <code>claude</code> command on my Mac</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Screen 2: Browser-only done -->
+  <div id="ob-screen-2a" class="onboard-screen hidden">
+    <div class="ob-logo">✅</div>
+    <div class="ob-title">You're all set!</div>
+    <div class="ob-sub">Open claude.ai and start chatting — the gauges update automatically as you work.</div>
+    <div class="ob-tip">
+      <strong>Tip:</strong> Visit <code>claude.ai/settings/usage</code> anytime to sync Anthropic's real percentages to your gauge.
+    </div>
+    <button class="ob-done" id="ob-done-browser">Start using ClaudePacer →</button>
+  </div>
+
+  <!-- Screen 2b: Claude Code bridge setup -->
+  <div id="ob-screen-2b" class="onboard-screen hidden">
+    <div class="ob-title">Set up the Claude Code bridge</div>
+    <div class="ob-sub">3 quick steps — takes about 2 minutes</div>
+
+    <div class="ob-steps">
+      <div class="ob-step">
+        <div class="ob-step-num">1</div>
+        <div class="ob-step-body">
+          <div class="ob-step-title">Open Terminal</div>
+          <div class="ob-step-detail">Press <kbd>Cmd ⌘</kbd> + <kbd>Space</kbd> → type <strong>Terminal</strong> → hit Enter</div>
+        </div>
+      </div>
+
+      <div class="ob-step">
+        <div class="ob-step-num">2</div>
+        <div class="ob-step-body">
+          <div class="ob-step-title">Check for Node.js</div>
+          <div class="ob-step-detail">In Terminal, paste this and hit Enter:</div>
+          <div class="ob-code-row">
+            <code class="ob-code">node --version</code>
+            <button class="ob-copy-btn" data-copy="node --version">Copy</button>
+          </div>
+          <div class="ob-step-detail" style="margin-top:6px">
+            See <strong>v18</strong> or higher? Great, skip to step 3.<br>
+            See "command not found"? <a href="https://nodejs.org" target="_blank">Download Node.js</a> (free, takes 1 min).
+          </div>
+        </div>
+      </div>
+
+      <div class="ob-step">
+        <div class="ob-step-num">3</div>
+        <div class="ob-step-body">
+          <div class="ob-step-title">Install the bridge (runs automatically from now on)</div>
+          <div class="ob-step-detail">In Finder, go to <strong>Documents → ClaudePacer → claude-bridge</strong> and double-click:</div>
+          <div class="ob-code-row">
+            <code class="ob-code">install-bridge.command</code>
+          </div>
+          <div class="ob-step-detail" style="margin-top:6px">That's it — no Terminal window needed. The bridge starts automatically every time you log in.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-tip">The <strong>⌨️ Claude Code</strong> chip will appear in the panel header once the bridge connects.</div>
+    <button class="ob-done" id="ob-done-bridge">Got it, let's go →</button>
+    <button class="ob-skip" id="ob-skip-bridge">Skip for now</button>
+  </div>
+
+</div>
+
+<!-- Upgrade modal -->
+<div id="upgrade-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button id="modal-close" class="modal-close">✕</button>
+    <div class="modal-icon">✦</div>
+    <div class="modal-title">ClaudePacer Pro</div>
+    <div class="modal-price">$19 <span class="modal-price-sub">one-time · lifetime access</span></div>
+    <ul class="modal-features">
+      <li>🧠 <strong>Auto-Update Memory File</strong> — compress context, save 30–55% tokens</li>
+      <li>✨ <strong>Start Fresh + Save</strong> — save thread to memory, open clean chat</li>
+      <li>🎁 <strong>Refer a friend</strong> — you both save $5</li>
+      <li>⚡ All future Pro features</li>
+    </ul>
+    <div class="modal-coming">
+      <div class="modal-coming-label">Payment coming soon</div>
+      <div class="modal-coming-sub">Enter your email to be notified when Pro launches:</div>
+      <div class="modal-email-row">
+        <input id="modal-email" class="modal-email-input" type="email" placeholder="you@example.com" />
+        <button id="modal-notify" class="modal-notify-btn">Notify me</button>
+      </div>
+      <div id="modal-email-thanks" class="modal-email-thanks hidden">✅ You're on the list!</div>
+    </div>
+  </div>
+</div>
+
+<script src="sidepanel.js"></script>
+</body>
+</html>

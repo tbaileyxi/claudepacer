@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: claudepacer-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=litellm
+      - POSTGRES_PASSWORD=litellmpass
+      - POSTGRES_DB=litellm
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: claudepacer-proxy
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - DATABASE_URL=postgresql://litellm:litellmpass@postgres:5432/litellm
+      - STORE_MODEL_IN_DB=True
+    command: ["--config", "/app/config.yaml", "--port", "4000", "--detailed_debug"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: claudepacer-dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - LITELLM_BASE_URL=http://litellm:4000
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - WEEKLY_TOKEN_LIMIT=${WEEKLY_TOKEN_LIMIT:-1000000}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+      - LIFETIME_PRICE_ID=${LIFETIME_PRICE_ID:-}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-changeme-generate-a-real-secret}
+    volumes:
+      - dashboard-data:/app/data
+    depends_on:
+      - litellm
+
+volumes:
+  postgres-data:
+  dashboard-data:

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClaudePacer Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0D0D14; color: #E8E8F0;
+      font-family: "Inter", sans-serif; font-size: 14px;
+      min-height: 100vh; padding: 32px 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .logo-mark {
+      width: 36px; height: 36px; background: #D97757;
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-weight: 800; font-size: 13px; color: white;
+    }
+    h1 { font-size: 20px; font-weight: 700; }
+    .subtitle { font-size: 12px; color: #6B6B90; margin-top: 2px; }
+
+    .section {
+      background: #13131E; border: 1px solid #2D2D4A;
+      border-radius: 14px; padding: 18px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .08em; color: #6B6B90; margin-bottom: 14px;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .hint { font-size: 11px; color: #6B6B90; margin-top: 4px; }
+
+    input[type="number"], input[type="text"], select {
+      width: 100%; background: #1A1A2E; border: 1px solid #2D2D4A;
+      border-radius: 9px; padding: 9px 12px; color: white;
+      font-family: inherit; font-size: 13px;
+      transition: border-color .15s;
+    }
+    input:focus, select:focus {
+      outline: none; border-color: #D97757;
+    }
+
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .toggle-label { font-size: 13px; font-weight: 500; }
+    .toggle {
+      width: 38px; height: 22px;
+      background: #2D2D4A; border-radius: 11px;
+      position: relative; cursor: pointer;
+      border: none; transition: background .2s;
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: ""; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: white; top: 3px; left: 3px;
+      transition: transform .2s;
+    }
+    .toggle.on { background: #22C55E; }
+    .toggle.on::after { transform: translateX(16px); }
+
+    .save-btn {
+      width: 100%; padding: 11px;
+      background: #D97757; color: white;
+      font-weight: 600; font-size: 14px;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background .15s, transform .1s;
+      box-shadow: 0 0 20px rgba(217,119,87,.25);
+    }
+    .save-btn:hover  { background: #E8906A; }
+    .save-btn:active { transform: scale(.98); }
+
+    .saved-msg {
+      text-align: center; font-size: 12px; color: #22C55E;
+      margin-top: 10px; opacity: 0; transition: opacity .3s;
+    }
+    .saved-msg.show { opacity: 1; }
+
+    .danger-btn {
+      width: 100%; padding: 9px;
+      background: transparent; color: #EF4444;
+      font-size: 12px; font-weight: 500;
+      border: 1px solid rgba(239,68,68,.3); border-radius: 10px;
+      cursor: pointer; transition: all .15s; margin-top: 8px;
+    }
+    .danger-btn:hover { background: rgba(239,68,68,.08); }
+
+    a { color: #D97757; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .plan-btn {
+      flex: 1; min-width: 100px; padding: 10px 8px;
+      background: #1A1A2E; border: 1px solid #2D2D4A;
+      border-radius: 10px; color: #E8E8F0;
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer; text-align: center; line-height: 1.4;
+      transition: border-color .15s, background .15s;
+    }
+    .plan-btn span { font-size: 10px; font-weight: 400; color: #6B6B90; }
+    .plan-btn:hover { border-color: #D97757; background: #1e1830; }
+    .plan-btn.active {
+      border-color: #D97757; background: rgba(217,119,87,.12);
+      color: #D97757;
+    }
+    .plan-btn.active span { color: #D97757; opacity: .7; }
+
+    /* Week start - add Saturday option via JS */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-mark">CP</div>
+      <div>
+        <h1>ClaudePacer Settings</h1>
+        <div class="subtitle">Customize your usage tracker</div>
+      </div>
+    </header>
+
+    <!-- Budget -->
+    <div class="section">
+      <div class="section-title">Weekly Token Budget</div>
+      <div class="field">
+        <label>Your Anthropic plan</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <button class="plan-btn" data-limit="100000">Claude Pro<br><span>~100k / week</span></button>
+          <button class="plan-btn" data-limit="500000">Max 5×<br><span>~500k / week</span></button>
+          <button class="plan-btn" data-limit="2000000">Max 20×<br><span>~2M / week</span></button>
+        </div>
+        <label for="weekly-limit" style="margin-top:6px">Or set manually</label>
+        <input type="number" id="weekly-limit" min="10000" max="10000000" step="10000" value="100000" />
+        <div class="hint">
+          Anthropic doesn't publish exact limits. Pro users typically see ~95–100k/week.<br>
+          Check claude.ai → Settings → Usage and match the percentage to dial this in.
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="section">
+      <div class="section-title">Alerts</div>
+      <div class="field">
+        <div class="toggle-row">
+          <span class="toggle-label">Alert at 70% used</span>
+          <button class="toggle on" id="toggle-70" aria-pressed="true"></button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="toggle-row">
+          <span class="toggle-label">Alert at 90% used</span>
+          <button class="toggle on" id="toggle-90" aria-pressed="true"></button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="toggle-row">
+          <span class="toggle-label">Show badge on extension icon</span>
+          <button class="toggle on" id="toggle-badge" aria-pressed="true"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week start -->
+    <div class="section">
+      <div class="section-title">Week Start Day</div>
+      <div class="field">
+        <label for="week-start">Reset weekly budget on</label>
+        <select id="week-start">
+          <option value="1" selected>Monday</option>
+          <option value="0">Sunday</option>
+          <option value="6">Saturday (matches most Anthropic plans)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Save -->
+    <button class="save-btn" id="btn-save">Save Settings</button>
+    <div class="saved-msg" id="saved-msg">✓ Settings saved</div>
+
+    <!-- Dev / testing -->
+    <div class="section" style="margin-top: 16px;">
+      <div class="section-title">Developer</div>
+      <p style="font-size: 12px; color: #6B6B90; margin-bottom: 10px;">
+        Test Pro features without purchasing.
+      </p>
+      <button class="save-btn" id="btn-toggle-pro" style="margin-bottom:8px">
+        Enable Pro Mode (test)
+      </button>
+      <div id="pro-status" style="font-size:11px;color:#6B6B90;text-align:center;margin-bottom:8px"></div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="section" style="margin-top: 16px;">
+      <div class="section-title">Data</div>
+      <p style="font-size: 12px; color: #6B6B90; margin-bottom: 10px;">
+        All data is stored locally on your device. Nothing is sent to any server.
+      </p>
+      <button class="danger-btn" id="btn-reset-all">Reset all usage data</button>
+    </div>
+
+    <p style="text-align:center; font-size:11px; color:#3A3A5A; margin-top:20px;">
+      ClaudePacer v1.0.0 · <a href="https://claudepacer.com">claudepacer.com</a>
+    </p>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

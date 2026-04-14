@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClaudePacer — Screenshot 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1280px; height: 800px; overflow: hidden; background: #0D0D14; font-family: "Inter", sans-serif; }
+
+    .layout { display: flex; width: 1280px; height: 800px; }
+
+    /* ── Mock claude.ai browser chrome ── */
+    .browser { flex: 1; display: flex; flex-direction: column; background: #1a1a1a; }
+    .browser-bar {
+      height: 44px; background: #2a2a2a; display: flex; align-items: center;
+      gap: 8px; padding: 0 16px; border-bottom: 1px solid #3a3a3a; flex-shrink: 0;
+    }
+    .browser-dots { display: flex; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; }
+    .dot-y { background: #FEBC2E; }
+    .dot-g { background: #28C840; }
+    .browser-url {
+      flex: 1; max-width: 500px; margin: 0 auto;
+      background: #1a1a1a; border-radius: 8px; padding: 5px 14px;
+      font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px;
+    }
+    .lock-icon { color: #22C55E; font-size: 11px; }
+
+    /* Mock claude.ai page */
+    .claude-page {
+      flex: 1; background: #0D0D14; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .claude-header {
+      height: 52px; background: #13131E; border-bottom: 1px solid #1e1e30;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; flex-shrink: 0;
+    }
+    .claude-logo { display: flex; align-items: center; gap: 10px; }
+    .claude-logo-mark { font-size: 22px; }
+    .claude-logo-text { font-size: 15px; font-weight: 600; color: #e8e8f0; }
+    .claude-nav { display: flex; gap: 6px; }
+    .claude-nav-item {
+      padding: 5px 12px; border-radius: 8px; font-size: 12px;
+      color: #6b6b90; cursor: pointer;
+    }
+    .claude-nav-item.active { background: #1a1a2e; color: #e8e8f0; }
+
+    .claude-chat { flex: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+
+    .msg { display: flex; gap: 12px; }
+    .msg.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+    }
+    .avatar-claude { background: linear-gradient(135deg, #D97757, #c2603a); color: white; }
+    .avatar-user   { background: #22223B; color: #9494c0; font-size: 12px; }
+
+    .bubble {
+      max-width: 480px; padding: 12px 16px; border-radius: 14px;
+      font-size: 13px; line-height: 1.6; color: #e8e8f0;
+    }
+    .bubble-claude { background: #13131E; border: 1px solid #1e1e30; border-top-left-radius: 4px; }
+    .bubble-user   { background: #1a1a2e; border: 1px solid #2a2a44; border-top-right-radius: 4px; }
+
+    .bubble code {
+      background: #0d0d1a; border: 1px solid #2a2a44; border-radius: 4px;
+      padding: 1px 5px; font-size: 11px; font-family: monospace; color: #D97757;
+    }
+
+    .typing-indicator {
+      display: flex; gap: 4px; padding: 14px 16px;
+      background: #13131E; border: 1px solid #1e1e30;
+      border-radius: 14px; border-top-left-radius: 4px;
+      width: 60px;
+    }
+    .typing-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #4a4a70;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+    .claude-input-area {
+      padding: 16px 24px 20px; border-top: 1px solid #1e1e30;
+      background: #0D0D14; flex-shrink: 0;
+    }
+    .claude-input {
+      background: #13131E; border: 1px solid #2a2a44; border-radius: 12px;
+      padding: 12px 16px; color: #6b6b90; font-size: 13px; font-family: inherit;
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* ── Side panel ── */
+    .sidepanel {
+      width: 380px; flex-shrink: 0;
+      border-left: 1px solid #1e1e30;
+      background: #0D0D14; display: flex; flex-direction: column;
+      overflow-y: auto; overflow-x: hidden;
+    }
+
+    /* reuse sidepanel styles inline */
+    :root {
+      --brand: #D97757; --brand-h: #E8906A;
+      --bg:  #0D0D14; --bg2: #13131E; --bg3: #1A1A2E; --bg4: #22223B;
+      --border: #2A2A3F; --text: #E8E8F0; --muted: #6B6B90;
+      --green: #22C55E; --amber: #F59E0B; --red: #EF4444;
+      --r: 14px;
+    }
+
+    .sp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 14px; background: #13131E; border-bottom: 1px solid #2A2A3F;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+    }
+    .sp-logo { display: flex; align-items: center; gap: 10px; }
+    .sp-logo-mark {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: linear-gradient(135deg, #D97757, #c2603a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; box-shadow: 0 0 14px rgba(217,119,87,.4);
+    }
+    .sp-logo-name { font-weight: 800; font-size: 14px; color: #E8E8F0; }
+    .sp-logo-sub  { font-size: 9px; color: #6B6B90; margin-top: 1px; }
+    .sp-header-right { display: flex; align-items: center; gap: 7px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 7px #22C55E; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-label { font-size: 10px; font-weight: 600; color: #22C55E; }
+    .badge-free { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #22223B; color: #6B6B90; border: 1px solid #2A2A3F; }
+
+    .cal-banner {
+      font-size: 11px; text-align: center; padding: 4px 14px;
+      color: #22C55E; background: rgba(34,197,94,.08); border-bottom: 1px solid rgba(34,197,94,.15);
+    }
+    .source-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 4px 14px;
+      background: rgba(34,197,94,.04); border-bottom: 1px solid rgba(34,197,94,.12);
+    }
+    .src-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px;
+    }
+    .src-browser { background: rgba(99,102,241,.12); color: #818cf8; border: 1px solid rgba(99,102,241,.25); }
+
+    .gauges-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 7px; padding: 9px 9px 0;
+    }
+    .gauge-card {
+      background: #13131E; border: 1px solid #2A2A3F;
+      border-radius: 13px; padding: 9px 7px;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+    }
+    .card-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #6B6B90; }
+    .gauge-toggle-row { display: flex; gap: 4px; justify-content: center; }
+    .gtog {
+      background: none; border: 1px solid #2A2A3F;
+      border-radius: 20px; padding: 2px 9px;
+      font-family: inherit; font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: #6B6B90; cursor: pointer;
+    }
+    .gtog.active { background: #D97757; border-color: #D97757; color: white; }
+
+    .speedo-svg { width: 100%; overflow: visible; }
+    .gas-svg { width: 100%; max-width: 150px; }
+
+    .speedo-footer { display: flex; align-items: center; gap: 7px; }
+    .s-label { font-size: 12px; font-weight: 800; }
+    .s-accel { font-size: 14px; }
+    .s-mult  { font-size: 10px; color: #6B6B90; }
+
+    .g-days    { font-size: 11px; font-weight: 700; text-align: center; }
+    .g-urgency { font-size: 9px; font-weight: 600; padding: 2px 9px; border-radius: 20px; text-align: center; }
+    .g-tokens  { font-size: 8px; color: #6B6B90; text-align: center; }
+
+    .stats-bar {
+      display: flex; align-items: stretch;
+      margin: 7px 9px 0;
+      background: #13131E; border: 1px solid #2A2A3F;
+      border-radius: 13px; overflow: hidden;
+    }
+    .stat { flex: 1; padding: 8px 3px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .stat-sep { width: 1px; background: #2A2A3F; }
+    .stat-lbl { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #6B6B90; }
+    .stat-val { font-size: 13px; font-weight: 800; color: white; }
+
+    .section {
+      margin: 7px 9px 0;
+      background: #13131E; border: 1px solid #2A2A3F;
+      border-radius: 13px; padding: 11px;
+    }
+    .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+    .sec-title { font-size: 12px; font-weight: 700; color: #E8E8F0; }
+    .sec-sub { font-size: 9px; color: #6B6B90; margin: -3px 0 9px; }
+    .mem-badge-locked { font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 20px; background: #22223B; color: #6B6B90; border: 1px solid #2A2A3F; }
+
+    .mem-btns { display: flex; flex-direction: column; gap: 7px; }
+    .mem-btn {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 12px;
+      background: #1A1A2E; border: 1px solid #2A2A3F;
+      border-radius: 10px; opacity: .5;
+    }
+    .mem-icon  { font-size: 20px; flex-shrink: 0; }
+    .mem-title { font-size: 12px; font-weight: 700; color: white; margin-bottom: 1px; }
+    .mem-sub   { font-size: 10px; color: #6B6B90; }
+
+    .upgrade-btn {
+      width: 100%; margin-top: 9px; padding: 11px;
+      background: #D97757; color: white;
+      font-size: 12px; font-weight: 700;
+      border: none; border-radius: 10px;
+      box-shadow: 0 0 24px rgba(217,119,87,.3);
+    }
+
+    .sp-footer {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 9px 9px 12px; margin-top: 4px;
+    }
+    .foot-btn { background: none; border: none; font-family: inherit; font-size: 10px; color: #6B6B90; cursor: pointer; }
+    .foot-sep { color: #2A2A3F; font-size: 9px; }
+
+    /* session bar */
+    .session-bar {
+      margin: 0 9px 0; background: #13131E; border: 1px solid #2A2A3F;
+      border-radius: 9px; padding: 9px 11px;
+    }
+    .sbar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+    .sbar-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: #6B6B90; }
+    .sbar-reset { font-size: 9px; color: #6B6B90; }
+    .sbar-track { height: 5px; background: #1A1A2E; border-radius: 99px; overflow: hidden; }
+    .sbar-fill { height: 100%; border-radius: 99px; }
+    .sbar-foot { display: flex; justify-content: space-between; margin-top: 4px; }
+    .sbar-pct { font-size: 9px; color: #6B6B90; }
+
+    /* watermark */
+    .watermark {
+      position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; color: rgba(255,255,255,.06); white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Browser + Claude mock -->
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="browser-url">
+        <span class="lock-icon">🔒</span>
+        claude.ai/chat
+      </div>
+    </div>
+
+    <div class="claude-page">
+      <div class="claude-header">
+        <div class="claude-logo">
+          <div class="claude-logo-mark">✦</div>
+          <div class="claude-logo-text">Claude</div>
+        </div>
+        <div class="claude-nav">
+          <div class="claude-nav-item">New chat</div>
+          <div class="claude-nav-item active">Projects</div>
+          <div class="claude-nav-item">History</div>
+        </div>
+        <div style="width:80px"></div>
+      </div>
+
+      <div class="claude-chat">
+        <!-- User message -->
+        <div class="msg user">
+          <div class="avatar avatar-user">T</div>
+          <div class="bubble bubble-user">
+            Can you help me refactor this Python function to use async/await? It's currently blocking the event loop on file reads.
+          </div>
+        </div>
+
+        <!-- Claude response -->
+        <div class="msg">
+          <div class="avatar avatar-claude">✦</div>
+          <div class="bubble bubble-claude">
+            Absolutely! Here's the async version using <code>aiofiles</code>. The key change is replacing the blocking <code>open()</code> call with <code>async with aiofiles.open()</code>, which yields control back to the event loop during I/O waits.<br><br>
+            This means other coroutines can run while your file is being read — critical if you're handling multiple requests concurrently. Want me to also add error handling and a retry mechanism?
+          </div>
+        </div>
+
+        <!-- User follow-up -->
+        <div class="msg user">
+          <div class="avatar avatar-user">T</div>
+          <div class="bubble bubble-user">
+            Yes, add exponential backoff with a max of 3 retries.
+          </div>
+        </div>
+
+        <!-- Claude typing -->
+        <div class="msg">
+          <div class="avatar avatar-claude">✦</div>
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="claude-input-area">
+        <div class="claude-input">
+          <span>Reply to Claude…</span>
+          <span style="font-size:16px;color:#3a3a5a">↑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Side panel -->
+  <div class="sidepanel">
+    <div class="sp-header">
+      <div class="sp-logo">
+        <div class="sp-logo-mark">⛽</div>
+        <div>
+          <div class="sp-logo-name">ClaudePacer</div>
+          <div class="sp-logo-sub">Stop driving Claude blind</div>
+        </div>
+      </div>
+      <div class="sp-header-right">
+        <div class="live-dot"></div>
+        <div class="live-label">Live</div>
+        <div class="badge-free">Free</div>
+      </div>
+    </div>
+
+    <div class="cal-banner">⚡ Synced with Anthropic — gauge shows real usage</div>
+    <div class="source-bar">
+      <span class="src-chip src-browser">🌐 Browser</span>
+    </div>
+
+    <div class="gauges-row">
+      <!-- Speedometer -->
+      <div class="gauge-card">
+        <div class="card-label">Burn Rate</div>
+        <svg id="speedo" viewBox="0 0 240 170" class="speedo-svg">
+          <defs>
+            <filter id="gn"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="ga"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <radialGradient id="pg"><stop offset="0%" stop-color="#22223B"/><stop offset="100%" stop-color="#13131E"/></radialGradient>
+          </defs>
+          <path id="s-track"   fill="none" stroke="#1A1A2E" stroke-width="16" stroke-linecap="round"/>
+          <path id="s-z-green" fill="none" stroke="#22C55E" stroke-width="14" opacity=".18"/>
+          <path id="s-z-amber" fill="none" stroke="#F59E0B" stroke-width="14" opacity=".18"/>
+          <path id="s-z-red"   fill="none" stroke="#EF4444" stroke-width="14" opacity=".18"/>
+          <path id="s-fill"    fill="none" stroke-width="14" stroke-linecap="round" filter="url(#ga)"/>
+          <g    id="s-ticks"/>
+          <polygon id="s-needle" filter="url(#gn)"/>
+          <circle cx="120" cy="130" r="12" fill="url(#pg)" id="s-pr" stroke-width="2.5"/>
+          <circle cx="120" cy="130" r="4"  id="s-pd"/>
+          <text id="s-val" x="120" y="112" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="30" font-weight="800" fill="white">420</text>
+          <text x="120" y="126" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">tokens / min</text>
+        </svg>
+        <div class="speedo-footer">
+          <span class="s-label" style="color:#F59E0B">Cruising</span>
+          <span class="s-accel" style="color:#22C55E">↑</span>
+          <span class="s-mult">1.2× avg</span>
+        </div>
+      </div>
+
+      <!-- Gas gauge -->
+      <div class="gauge-card">
+        <div class="card-label gauge-toggle-row">
+          <button class="gtog active">Weekly</button>
+          <button class="gtog">Session</button>
+        </div>
+        <svg viewBox="0 0 180 180" class="gas-svg">
+          <defs>
+            <filter id="gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <circle id="g-track" cx="90" cy="90" r="68" fill="none" stroke="#1A1A2E" stroke-width="15" stroke-linecap="round"/>
+          <circle id="g-bg"    cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round" opacity=".2"/>
+          <circle id="g-fill"  cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round" filter="url(#gg)"/>
+          <text x="90" y="76" text-anchor="middle" font-size="26">⛽</text>
+          <text id="g-pct" x="90" y="104" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="28" font-weight="800" fill="white">62%</text>
+          <text x="90" y="120" text-anchor="middle"
+                font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">remaining</text>
+        </svg>
+        <div class="g-days" style="color:#22C55E">at this pace: ~4.2 days left</div>
+        <div class="g-urgency" style="color:#22C55E;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:20px;padding:2px 9px;">Plenty left 🟢</div>
+        <div class="g-tokens">38k used / 100k</div>
+      </div>
+    </div>
+
+    <!-- Session bar -->
+    <div style="margin: 7px 9px 0;">
+      <div class="session-bar">
+        <div class="sbar-head">
+          <span class="sbar-label">5-hr Session Window</span>
+          <span class="sbar-reset">resets in 2h 14m</span>
+        </div>
+        <div class="sbar-track">
+          <div class="sbar-fill" style="width:55%;background:#F59E0B"></div>
+        </div>
+        <div class="sbar-foot">
+          <span class="sbar-pct">45% used this session</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-lbl">Session</div><div class="stat-val">14.2k</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><div class="stat-lbl">This Week</div><div class="stat-val">38k</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><div class="stat-lbl">Messages</div><div class="stat-val">47</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><div class="stat-lbl">Resets In</div><div class="stat-val">4d</div></div>
+    </div>
+
+    <!-- Token Savers -->
+    <div class="section">
+      <div class="sec-head">
+        <span class="sec-title">💰 Token Savers</span>
+        <span class="mem-badge-locked">🔒 Pro</span>
+      </div>
+      <div class="sec-sub">Stretch your weekly budget · stay in limits longer</div>
+      <div class="mem-btns">
+        <div class="mem-btn">
+          <div class="mem-icon">🧠</div>
+          <div>
+            <div class="mem-title">Compress Context</div>
+            <div class="mem-sub">Claude writes your MEMORY.md · saves 30–55%</div>
+          </div>
+        </div>
+        <div class="mem-btn">
+          <div class="mem-icon">✨</div>
+          <div>
+            <div class="mem-title">Start Fresh + Save</div>
+            <div class="mem-sub">Saves session context · opens clean chat</div>
+          </div>
+        </div>
+      </div>
+      <button class="upgrade-btn">Unlock Token Savers — $29 lifetime ✦</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="sp-footer">
+      <button class="foot-btn">⚙ Settings</button>
+      <span class="foot-sep">·</span>
+      <button class="foot-btn">Reset week</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function xy(cx,cy,r,deg){const rad=deg*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
+function arc(cx,cy,r,a1,a2){const s=xy(cx,cy,r,a1),e=xy(cx,cy,r,a2);const sw=((a2-a1)+360)%360;return`M ${s.x} ${s.y} A ${r} ${r} 0 ${sw>180?1:0} 1 ${e.x} ${e.y}`;}
+
+const S={cx:120,cy:130,r:90,a0:135,sw:270,max:3000};
+const g=document.getElementById("s-ticks");
+for(let i=0;i<=9;i++){const a=S.a0+(i/9)*S.sw;const p1=xy(S.cx,S.cy,S.r-16,a);const p2=xy(S.cx,S.cy,S.r+4,a);const ln=document.createElementNS("http://www.w3.org/2000/svg","line");ln.setAttribute("x1",p1.x);ln.setAttribute("y1",p1.y);ln.setAttribute("x2",p2.x);ln.setAttribute("y2",p2.y);ln.setAttribute("stroke-width",i%3===0?"2":"1");ln.setAttribute("stroke",i%3===0?"#3A3A5A":"#232335");g.appendChild(ln);}
+
+const rate=420,pct=rate/3000,end=S.a0+pct*S.sw,col="#F59E0B";
+document.getElementById("s-track").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,S.a0+S.sw));
+document.getElementById("s-z-green").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,S.a0+S.sw*.33));
+document.getElementById("s-z-amber").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0+S.sw*.33,S.a0+S.sw*.66));
+document.getElementById("s-z-red").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0+S.sw*.66,S.a0+S.sw));
+document.getElementById("s-fill").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,end));
+document.getElementById("s-fill").setAttribute("stroke",col);
+const tip=xy(S.cx,S.cy,76,end),lf=xy(S.cx,S.cy,8,end-90),rt=xy(S.cx,S.cy,8,end+90);
+document.getElementById("s-needle").setAttribute("points",`${tip.x},${tip.y} ${lf.x},${lf.y} ${rt.x},${rt.y}`);
+document.getElementById("s-needle").setAttribute("fill",col);
+document.getElementById("s-pr").setAttribute("stroke",col);
+document.getElementById("s-pd").setAttribute("fill",col);
+
+const circ=2*Math.PI*68,arcL=circ*(270/360),fill=arcL*0.62;
+["g-track","g-bg","g-fill"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.setAttribute("stroke-dasharray",id==="g-fill"?`${fill} ${circ}`:`${arcL} ${circ}`);
+  el.setAttribute("transform","rotate(135 90 90)");
+  if(id!=="g-track")el.setAttribute("stroke","#22C55E");
+});
+</script>
+</body>
+</html>

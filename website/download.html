@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download ClaudePacer — Free Chrome Extension</title>
+  <meta name="description" content="Download ClaudePacer for free. No account required. Works instantly on claude.ai." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #0D0D14; color: #E8E8F0; font-family: 'Inter', system-ui, sans-serif; }
+    .shell { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+    .brand { color: #D97757; }
+    .card { background: #13131E; border: 1px solid #2A2A3F; border-radius: 20px; }
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217,119,87,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 35% at 85% 20%, rgba(34,197,94,.06) 0%, transparent 70%),
+        #0D0D14;
+    }
+    .gradient-text {
+      color: #F1F1F7;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7C5CFF, #5B7CFF); color: white; font-weight: 700;
+      padding: 16px 40px; border-radius: 12px; transition: all .2s; border: none; cursor: pointer;
+      box-shadow: 0 12px 30px rgba(91,124,255,.28); text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(91,124,255,.34); }
+    input[type="email"] {
+      background: #13131E; border: 1px solid #2A2A3F; color: #E8E8F0;
+      padding: 14px 18px; border-radius: 10px; font-size: 15px;
+      width: 100%; outline: none; font-family: 'Inter', sans-serif;
+      transition: border-color .2s;
+    }
+    input[type="email"]:focus { border-color: #5B7CFF; }
+    input[type="email"]::placeholder { color: #6B6B90; }
+    nav { background: rgba(13,13,20,.85); backdrop-filter: blur(16px); border-bottom: 1px solid #2A2A3F; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes checkmark { from{stroke-dashoffset:100} to{stroke-dashoffset:0} }
+    .success-check { animation: checkmark .4s ease forwards; }
+    .site-footer { border-top:1px solid #2A2A3F; padding:24px 0 28px; }
+    .footer-links { display:flex; gap:18px; flex-wrap:wrap; }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1080px); }
+      .footer-row { flex-direction: column; align-items: flex-start !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="sticky top-0 z-50">
+  <div class="shell" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;">
+    <a href="/" class="flex items-center gap-3">
+      <div style="width:38px;height:38px;border-radius:12px;background:#1A1A2A;border:1px solid #2A2A3F;display:flex;align-items:center;justify-content:center;font-size:20px;">⛽</div>
+      <div>
+        <div style="font-weight:800;font-size:15px;">ClaudePacer</div>
+        <div style="font-size:11px;color:#6B6B90;">Stop driving Claude blind</div>
+      </div>
+    </a>
+    <a href="/" style="color:#6B6B90;font-size:14px;text-decoration:none;" class="hover:text-white">← Back to home</a>
+  </div>
+</nav>
+
+<section class="hero-bg" style="padding:80px 24px;">
+  <div class="max-w-2xl mx-auto text-center">
+
+    <div style="font-size:56px;margin-bottom:20px;">🏎️</div>
+    <h1 class="font-black mb-4" style="font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-0.02em;">
+      Get ClaudePacer<br/><span class="gradient-text">Free — No Account</span>
+    </h1>
+    <p style="color:#D97757;font-size:1rem;font-weight:700;margin-bottom:14px;">Start the engine. Watch your usage.</p>
+    <p style="color:#6B6B90;font-size:1.1rem;margin-bottom:48px;line-height:1.7;">
+      Install in one click. Works instantly on claude.ai — no setup, no API key, no routing your data anywhere.
+    </p>
+
+    <!-- Email form -->
+    <div class="card p-8 mb-6" style="text-align:left;">
+      <h2 style="font-weight:700;font-size:18px;margin-bottom:6px;">Get notified about updates</h2>
+      <p style="color:#6B6B90;font-size:14px;margin-bottom:20px;">Optional — drop your email to hear when Pro features ship. We'll never spam you.</p>
+
+      <div id="form-area">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input type="email" id="email-input" placeholder="you@example.com" style="flex:1;min-width:200px;" />
+          <button onclick="submitEmail()" style="background:linear-gradient(135deg,#7C5CFF,#5B7CFF);color:white;font-weight:700;padding:14px 24px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:14px;box-shadow:0 12px 30px rgba(91,124,255,.24);">
+            Save my spot
+          </button>
+        </div>
+        <p style="font-size:11px;color:#6B6B90;margin-top:10px;">No spam. Unsubscribe anytime. See our <a href="privacy.html" style="color:#D97757;">privacy policy</a>.</p>
+      </div>
+
+      <div id="success-area" style="display:none;text-align:center;padding:16px 0;">
+        <svg width="48" height="48" viewBox="0 0 48 48" style="margin:0 auto 12px;">
+          <circle cx="24" cy="24" r="22" fill="none" stroke="#22C55E" stroke-width="2.5"/>
+          <path d="M14 24 L21 31 L34 17" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="100" class="success-check"/>
+        </svg>
+        <div style="font-weight:700;font-size:16px;color:#22C55E;margin-bottom:4px;">You're on the list!</div>
+        <div style="color:#6B6B90;font-size:14px;">We'll email you when Pro features ship.</div>
+      </div>
+    </div>
+
+    <!-- Main CTA -->
+    <div class="card p-8 mb-6" style="border-color:rgba(217,119,87,.3);box-shadow:0 0 60px rgba(217,119,87,.1);">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#D97757,#c2603a);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 0 20px rgba(217,119,87,.4);">🏎️</div>
+        <div style="text-align:left;">
+          <div style="font-weight:800;font-size:18px;">ClaudePacer</div>
+          <div style="color:#6B6B90;font-size:13px;">Free Chrome Extension · Installs in &lt;5 seconds</div>
+        </div>
+      </div>
+
+      <a href="https://chrome.google.com/webstore/detail/claudepacer" class="btn-primary w-full text-center" style="font-size:16px;padding:18px 40px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12V22H3V12"/><polyline points="17 7 12 2 7 7"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Free - Add to Chrome
+      </a>
+
+      <div style="display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:#6B6B90;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          No account
+        </span>
+        <span style="font-size:12px;color:#6B6B90;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          No API key
+        </span>
+        <span style="font-size:12px;color:#6B6B90;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Works instantly
+        </span>
+        <span style="font-size:12px;color:#6B6B90;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Open source
+        </span>
+      </div>
+    </div>
+
+    <!-- Pro upgrade anchor -->
+    <div id="upgrade" class="card p-8" style="border-color:rgba(217,119,87,.3);">
+      <div style="font-size:11px;font-weight:700;color:#D97757;letter-spacing:.1em;margin-bottom:8px;">PRO — LIFETIME</div>
+      <div style="font-size:2.5rem;font-weight:900;margin-bottom:4px;background:linear-gradient(135deg,#D97757,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$19</div>
+      <div style="color:#6B6B90;font-size:14px;margin-bottom:20px;">One-time payment. No subscription.</div>
+      <ul style="list-style:none;padding:0;margin-bottom:24px;text-align:left;" class="space-y-2">
+        <li style="font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#D97757;">★</span> Compress This Chat (saves 30–55% tokens)</li>
+        <li style="font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#D97757;">★</span> Open Fresh Chat + Save to MEMORY.md</li>
+        <li style="font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#D97757;">★</span> Auto-update memory after each session</li>
+        <li style="font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#D97757;">★</span> Priority support + early access</li>
+      </ul>
+      <a href="https://claudepacer.com/upgrade" class="btn-primary w-full text-center" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;">
+        Upgrade to Pro — $19
+      </a>
+      <p style="font-size:12px;color:#6B6B90;margin-top:10px;">Referral: share your link, you + friend each save $5</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Install steps -->
+<section style="padding:60px 24px 80px;">
+  <div class="max-w-2xl mx-auto">
+    <h2 style="font-weight:800;font-size:1.5rem;text-align:center;margin-bottom:32px;">After installing</h2>
+    <div class="space-y-4">
+      <div class="card p-5 flex items-start gap-4">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(217,119,87,.15);border:1px solid rgba(217,119,87,.3);display:flex;align-items:center;justify-content:center;font-weight:800;color:#D97757;flex-shrink:0;font-size:13px;">1</div>
+        <div>
+          <div style="font-weight:600;margin-bottom:4px;">Open claude.ai</div>
+          <div style="color:#6B6B90;font-size:14px;">The ClaudePacer side panel opens automatically beside your conversation. You'll see demo mode with realistic data.</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-start gap-4">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(217,119,87,.15);border:1px solid rgba(217,119,87,.3);display:flex;align-items:center;justify-content:center;font-weight:800;color:#D97757;flex-shrink:0;font-size:13px;">2</div>
+        <div>
+          <div style="font-weight:600;margin-bottom:4px;">Send your first message</div>
+          <div style="color:#6B6B90;font-size:14px;">The green dot goes live. The speedometer starts moving. You're now tracking your token burn rate in real time.</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-start gap-4">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(217,119,87,.15);border:1px solid rgba(217,119,87,.3);display:flex;align-items:center;justify-content:center;font-weight:800;color:#D97757;flex-shrink:0;font-size:13px;">3</div>
+        <div>
+          <div style="font-weight:600;margin-bottom:4px;">(Optional) Connect Desktop</div>
+          <div style="color:#6B6B90;font-size:14px;">Use Claude Code in the terminal? Run the bridge to merge your desktop token usage into the same gauges.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="shell footer-row" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;">
+    <p style="color:#6B6B90;font-size:13px;margin:0;">© 2026 ClaudePacer</p>
+    <div class="footer-links">
+      <a href="/" style="color:#6B6B90;text-decoration:none;font-size:13px;">Home</a>
+      <a href="download.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Download</a>
+      <a href="pro.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Pro</a>
+      <a href="privacy.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Privacy</a>
+      <a href="mailto:pacer@claudepacer.com" style="color:#6B6B90;text-decoration:none;font-size:13px;">pacer@claudepacer.com</a>
+      <a href="https://github.com/claudepacer/claudepacer" style="color:#6B6B90;text-decoration:none;font-size:13px;">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function submitEmail() {
+    const email = document.getElementById('email-input').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('email-input').style.borderColor = '#EF4444';
+      return;
+    }
+    // In production: POST to your backend / email list service
+    console.log('Email captured:', email);
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('success-area').style.display = 'block';
+  }
+
+  document.getElementById('email-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitEmail();
+  });
+</script>
+</body>
+</html>

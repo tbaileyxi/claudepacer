@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — ClaudePacer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0D0D14; color: #E8E8F0; font-family: 'Inter', system-ui, sans-serif; }
+    .shell { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+    nav { background: rgba(13,13,20,.9); backdrop-filter: blur(16px); border-bottom: 1px solid #2A2A3F; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+    .logo-mark { width: 38px; height: 38px; border-radius: 12px; background: #1A1A2A; border: 1px solid #2A2A3F; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    main { max-width: 720px; margin: 0 auto; padding: 60px 0 80px; }
+    h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    .meta { color: #6B6B90; font-size: 14px; margin-bottom: 48px; }
+    h2 { font-size: 1.15rem; font-weight: 700; margin: 36px 0 10px; color: #E8E8F0; }
+    p { color: #9090A8; font-size: 15px; line-height: 1.75; margin-bottom: 12px; }
+    ul { color: #9090A8; font-size: 15px; line-height: 1.75; padding-left: 20px; margin-bottom: 12px; }
+    a { color: #D97757; }
+    .site-footer { border-top: 1px solid #2A2A3F; padding: 24px 0 28px; }
+    .footer-links { display:flex; gap:18px; flex-wrap:wrap; }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1080px); }
+      .footer-row { flex-direction: column; align-items: flex-start !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="shell" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;">
+    <a href="/" class="logo">
+      <div class="logo-mark">⛽</div>
+      <div>
+        <div style="font-weight:800;font-size:15px;">ClaudePacer</div>
+        <div style="font-size:11px;color:#6B6B90;">Stop driving Claude blind</div>
+      </div>
+    </a>
+    <a href="/" style="color:#6B6B90;font-size:14px;text-decoration:none;">← Back to home</a>
+  </div>
+</nav>
+
+<main class="shell">
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: April 14, 2026</p>
+
+  <p>ClaudePacer is a Chrome browser extension that helps Claude Pro/Max users track their token usage in real time. We take your privacy seriously. This policy explains exactly what data we collect (very little), what we don't collect (almost everything), and how we use it.</p>
+
+  <h2>What we collect</h2>
+  <p>ClaudePacer collects the minimum possible data to function:</p>
+  <ul>
+    <li><strong style="color:#E8E8F0;">Token counts</strong> — estimated counts of tokens sent and received during your claude.ai sessions. These are character-length measurements, not your actual message content.</li>
+    <li><strong style="color:#E8E8F0;">Session timestamps</strong> — when sessions start and end, to calculate burn rate and weekly totals.</li>
+    <li><strong style="color:#E8E8F0;">Settings preferences</strong> — your configured weekly limit, alert threshold, and week start day.</li>
+    <li><strong style="color:#E8E8F0;">Email address (optional)</strong> — only if you voluntarily enter it on the download page to receive product updates.</li>
+  </ul>
+
+  <h2>What we do NOT collect</h2>
+  <ul>
+    <li>Your conversation content — we measure response length, not the words themselves</li>
+    <li>Your Anthropic account credentials or session tokens</li>
+    <li>Browsing history or activity outside of claude.ai</li>
+    <li>Any personally identifiable information beyond your optional email</li>
+    <li>Crash reports or analytics telemetry</li>
+  </ul>
+
+  <h2>Where your data is stored</h2>
+  <p>All token counts and settings are stored in <strong style="color:#E8E8F0;">chrome.storage.local</strong> — your browser, on your device. This data never leaves your computer unless you explicitly enable Anthropic sync (see below).</p>
+  <p>If you provide your email address on the download page, it is stored securely in our email list provider and is never sold or shared with third parties.</p>
+
+  <h2>Anthropic sync</h2>
+  <p>ClaudePacer can optionally sync your usage data from Anthropic's servers to show you exact plan usage on the gas gauge. This is done by making an authenticated request to Anthropic's usage endpoint using your existing claude.ai browser session cookies. ClaudePacer does not store, transmit, or log these cookies — the request is made directly from your browser to Anthropic's servers.</p>
+  <p>You can disable this feature in Settings at any time.</p>
+
+  <h2>Desktop bridge</h2>
+  <p>The optional Claude Code bridge (<code style="background:#22223B;padding:1px 5px;border-radius:4px;font-size:12px;">bridge.js</code>) runs locally on your machine and reads file modification timestamps from <code style="background:#22223B;padding:1px 5px;border-radius:4px;font-size:12px;">~/.claude/projects/</code>. It does not read the content of your Claude Code conversation files — only file sizes and timestamps to estimate token activity. This data is served locally at <code style="background:#22223B;padding:1px 5px;border-radius:4px;font-size:12px;">http://127.0.0.1:7823</code> and never transmitted to any external server.</p>
+
+  <h2>Third-party services</h2>
+  <p>ClaudePacer does not use any third-party analytics, advertising, or tracking services within the extension itself. The website (claudepacer.com) may use standard web analytics (page views only, no personal data) to understand traffic.</p>
+
+  <h2>Your rights</h2>
+  <p>You may request deletion of any personal data we hold (i.e., your email address) at any time by emailing <a href="mailto:pacer@claudepacer.com">pacer@claudepacer.com</a>. Local extension data can be cleared by uninstalling the extension or clearing Chrome's extension storage.</p>
+
+  <h2>Children</h2>
+  <p>ClaudePacer is not directed at children under 13. We do not knowingly collect information from children.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>We may update this policy as the product evolves. Material changes will be noted on this page with an updated date. Continued use of ClaudePacer after changes constitutes acceptance of the updated policy.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy? Email us at <a href="mailto:pacer@claudepacer.com">pacer@claudepacer.com</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-row" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;">
+    <p style="color:#6B6B90;font-size:13px;margin:0;">© 2026 ClaudePacer</p>
+    <div class="footer-links">
+      <a href="/" style="color:#6B6B90;text-decoration:none;font-size:13px;">Home</a>
+      <a href="download.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Download</a>
+      <a href="pro.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Pro</a>
+      <a href="privacy.html" style="color:#6B6B90;text-decoration:none;font-size:13px;">Privacy</a>
+      <a href="mailto:pacer@claudepacer.com" style="color:#6B6B90;text-decoration:none;font-size:13px;">pacer@claudepacer.com</a>
+      <a href="https://github.com/claudepacer/claudepacer" style="color:#6B6B90;text-decoration:none;font-size:13px;">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

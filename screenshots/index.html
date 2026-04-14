@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClaudePacer — Screenshot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="sidepanel.css" />
+  <style>
+    /* Screenshot wrapper — 400px wide, matches real side panel */
+    body { width: 400px; min-height: 100vh; overflow-x: hidden; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">⛽</div>
+    <div>
+      <div class="logo-name">ClaudePacer</div>
+      <div class="logo-sub">Stop driving Claude blind</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot active"></div>
+    <div class="live-label active">Live</div>
+    <div class="badge free">Free</div>
+  </div>
+</header>
+
+<!-- Cal banner -->
+<div class="cal-banner calibrated">⚡ Synced with Anthropic — gauge shows real usage</div>
+
+<!-- Source bar -->
+<div class="source-bar">
+  <span class="src-chip src-browser">🌐 Browser</span>
+</div>
+
+<!-- Gauges -->
+<div class="gauges-row">
+
+  <!-- Speedometer -->
+  <div class="gauge-card">
+    <div class="card-label">Burn Rate</div>
+    <svg id="speedo" viewBox="0 0 240 170" class="speedo-svg">
+      <defs>
+        <filter id="gn"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="ga"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="pg"><stop offset="0%" stop-color="#22223B"/><stop offset="100%" stop-color="#13131E"/></radialGradient>
+      </defs>
+      <path id="s-track"   fill="none" stroke="#1A1A2E"  stroke-width="16" stroke-linecap="round"/>
+      <path id="s-z-green" fill="none" stroke="#22C55E"  stroke-width="14" opacity=".18"/>
+      <path id="s-z-amber" fill="none" stroke="#F59E0B"  stroke-width="14" opacity=".18"/>
+      <path id="s-z-red"   fill="none" stroke="#EF4444"  stroke-width="14" opacity=".18"/>
+      <path id="s-fill"    fill="none" stroke-width="14" stroke-linecap="round" filter="url(#ga)"/>
+      <g    id="s-ticks"/>
+      <polygon id="s-needle" filter="url(#gn)" style="transition:all 1.2s cubic-bezier(.34,1.4,.64,1)"/>
+      <circle cx="120" cy="130" r="12" fill="url(#pg)" id="s-pr" stroke-width="2.5"/>
+      <circle cx="120" cy="130" r="4"  id="s-pd"/>
+      <text id="s-val" x="120" y="112" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="30" font-weight="800" fill="white">420</text>
+      <text x="120" y="126" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">tokens / min</text>
+    </svg>
+    <div class="speedo-footer">
+      <span class="s-label" style="color:#F59E0B">Cruising</span>
+      <span class="s-accel" style="color:#22C55E">↑</span>
+      <span class="s-mult" style="color:#6B6B90">1.2× avg</span>
+    </div>
+  </div>
+
+  <!-- Gas Gauge -->
+  <div class="gauge-card">
+    <div class="card-label gauge-toggle-row">
+      <button class="gtog active">Weekly</button>
+      <button class="gtog">Session</button>
+    </div>
+    <svg viewBox="0 0 180 180" class="gas-svg">
+      <defs>
+        <filter id="gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <circle id="g-track" cx="90" cy="90" r="68" fill="none" stroke="#1A1A2E" stroke-width="15" stroke-linecap="round"/>
+      <circle id="g-bg"    cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round" opacity=".2"/>
+      <circle id="g-fill"  cx="90" cy="90" r="68" fill="none" stroke-width="13" stroke-linecap="round"
+              filter="url(#gg)" style="transition:stroke-dasharray 1.2s ease-out,stroke .5s"/>
+      <text x="90" y="76"  text-anchor="middle" font-size="26">⛽</text>
+      <text id="g-pct" x="90" y="104" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="28" font-weight="800" fill="white">62%</text>
+      <text x="90" y="120" text-anchor="middle"
+            font-family="Inter,sans-serif" font-size="10" fill="#4A4A70">remaining</text>
+    </svg>
+    <div class="g-days" style="color:#22C55E">at this pace: ~4.2 days left</div>
+    <div class="g-urgency" style="color:#22C55E;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:20px;padding:2px 10px;">Plenty left 🟢</div>
+    <div class="g-tokens">38k used / 100k</div>
+  </div>
+
+</div>
+
+<!-- Session bar -->
+<div class="session-bar">
+  <div class="sbar-head">
+    <span class="sbar-label">5-hr Session Window</span>
+    <span class="sbar-reset">resets in 2h 14m</span>
+  </div>
+  <div class="sbar-track">
+    <div class="sbar-fill" style="width:55%;background:#F59E0B"></div>
+  </div>
+  <div class="sbar-foot">
+    <span class="sbar-pct">45% used this session</span>
+    <span class="sbar-warn"></span>
+  </div>
+</div>
+
+<!-- Stats bar -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-lbl">Session</div>
+    <div class="stat-val">14.2k</div>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stat">
+    <div class="stat-lbl">This Week</div>
+    <div class="stat-val">38k</div>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stat">
+    <div class="stat-lbl">Messages</div>
+    <div class="stat-val">47</div>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stat">
+    <div class="stat-lbl">Resets In</div>
+    <div class="stat-val">4d</div>
+  </div>
+</div>
+
+<!-- Pro Tools -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">💰 Token Savers</span>
+    <span class="mem-badge locked">🔒 Pro</span>
+  </div>
+  <div class="sec-sub">Stretch your weekly budget · stay in limits longer</div>
+  <div class="mem-btns">
+    <button class="mem-btn" data-locked="true">
+      <div class="mem-icon">🧠</div>
+      <div class="mem-text">
+        <div class="mem-title">Compress Context</div>
+        <div class="mem-sub">Copies a prompt · Claude writes your MEMORY.md · saves 30–55%</div>
+      </div>
+    </button>
+    <button class="mem-btn mem-green" data-locked="true">
+      <div class="mem-icon">✨</div>
+      <div class="mem-text">
+        <div class="mem-title">Start Fresh + Save</div>
+        <div class="mem-sub">Copies session summary prompt · opens clean chat</div>
+      </div>
+    </button>
+  </div>
+  <button class="upgrade-btn">Unlock Token Savers — $29 one-time, lifetime access ✦</button>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <button class="foot-btn">⚙ Settings</button>
+  <span class="foot-sep">·</span>
+  <button class="foot-btn danger">Reset week</button>
+</div>
+
+<script>
+// Draw gauges with baked-in values
+function xy(cx,cy,r,deg){const rad=deg*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
+function arc(cx,cy,r,a1,a2){const s=xy(cx,cy,r,a1),e=xy(cx,cy,r,a2);const sw=((a2-a1)+360)%360;return`M ${s.x} ${s.y} A ${r} ${r} 0 ${sw>180?1:0} 1 ${e.x} ${e.y}`;}
+
+const S={cx:120,cy:130,r:90,a0:135,sw:270,max:3000};
+
+// Ticks
+const g=document.getElementById("s-ticks");
+for(let i=0;i<=9;i++){const a=S.a0+(i/9)*S.sw;const p1=xy(S.cx,S.cy,S.r-16,a);const p2=xy(S.cx,S.cy,S.r+4,a);const ln=document.createElementNS("http://www.w3.org/2000/svg","line");ln.setAttribute("x1",p1.x);ln.setAttribute("y1",p1.y);ln.setAttribute("x2",p2.x);ln.setAttribute("y2",p2.y);ln.setAttribute("stroke-width",i%3===0?"2":"1");ln.setAttribute("stroke",i%3===0?"#3A3A5A":"#232335");g.appendChild(ln);}
+
+// Speedo at 420 tok/min
+const rate=420,pct=rate/3000;
+const end=S.a0+pct*S.sw;
+const col="#F59E0B";
+document.getElementById("s-track").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,S.a0+S.sw));
+document.getElementById("s-z-green").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,S.a0+S.sw*.33));
+document.getElementById("s-z-amber").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0+S.sw*.33,S.a0+S.sw*.66));
+document.getElementById("s-z-red").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0+S.sw*.66,S.a0+S.sw));
+document.getElementById("s-fill").setAttribute("d",arc(S.cx,S.cy,S.r,S.a0,end));
+document.getElementById("s-fill").setAttribute("stroke",col);
+const tip=xy(S.cx,S.cy,76,end),lf=xy(S.cx,S.cy,8,end-90),rt=xy(S.cx,S.cy,8,end+90);
+document.getElementById("s-needle").setAttribute("points",`${tip.x},${tip.y} ${lf.x},${lf.y} ${rt.x},${rt.y}`);
+document.getElementById("s-needle").setAttribute("fill",col);
+document.getElementById("s-pr").setAttribute("stroke",col);
+document.getElementById("s-pd").setAttribute("fill",col);
+
+// Gas gauge at 38% used = 62% remaining
+const circ=2*Math.PI*68;
+const arcL=circ*(270/360);
+const remaining=0.62;
+const fill=arcL*remaining;
+const gasFill=document.getElementById("g-fill");
+gasFill.setAttribute("stroke","#22C55E");
+gasFill.setAttribute("stroke-dasharray",`${fill} ${circ}`);
+gasFill.setAttribute("transform","rotate(135 90 90)");
+document.getElementById("g-track").setAttribute("stroke-dasharray",`${arcL} ${circ}`);
+document.getElementById("g-track").setAttribute("transform","rotate(135 90 90)");
+document.getElementById("g-bg").setAttribute("stroke","#22C55E");
+document.getElementById("g-bg").setAttribute("stroke-dasharray",`${arcL} ${circ}`);
+document.getElementById("g-bg").setAttribute("transform","rotate(135 90 90)");
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+model_list:
+  # Claude 4 models
+  - model_name: claude-opus-4-5
+    litellm_params:
+      model: anthropic/claude-opus-4-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-sonnet-4-5
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5-20251101
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-haiku-4-5
+    litellm_params:
+      model: anthropic/claude-haiku-4-5-20251001
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  # Legacy aliases — keeps existing scripts working
+  - model_name: claude-3-5-sonnet-20241022
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5-20251101
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-3-5-haiku-20241022
+    litellm_params:
+      model: anthropic/claude-haiku-4-5-20251001
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  # Catch-all: any model name not listed above passes through unchanged
+  - model_name: "*"
+    litellm_params:
+      model: anthropic/*
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+litellm_settings:
+  # Store full request/response logs so the dashboard can compute burn rate
+  success_callback: ["langfuse"]   # optional — remove if not using Langfuse
+  drop_params: true                # silently drop unsupported params
+  request_timeout: 600
+  num_retries: 2
+  telemetry: false                 # don't send usage data to LiteLLM cloud
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  store_model_in_db: true
+
+  # Allow the dashboard to query spend logs
+  allow_user_auth: false
+  disable_spend_logs: false
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 2
+  timeout: 600
