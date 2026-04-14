@@ -76,24 +76,51 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   document.execCommand("delete",    false, null);
   document.execCommand("insertText", false, text);
 
-  // Give React one tick to process the input event, then click Send
-  setTimeout(() => {
+  // Also dispatch an 'input' event so React's state updates the send button
+  editor.dispatchEvent(new Event("input", { bubbles: true }));
+
+  // Try to click Send — retry up to 3 times with increasing delay
+  // (React needs a tick to re-render the button as enabled after text insertion)
+  function trySend(attempt) {
+    // Case-insensitive aria-label search (claude.ai has changed capitalization)
+    const allBtns = [...document.querySelectorAll("button:not([disabled])")];
     const sendBtn =
       document.querySelector('button[aria-label="Send message"]') ||
+      document.querySelector('button[aria-label="Send Message"]') ||
       document.querySelector('[data-testid="send-button"]')       ||
-      // Fallback: last button in the form area that isn't disabled
+      // Any enabled icon-only button (SVG, no text) near the bottom of the page
+      allBtns.find(b => b.querySelector("svg") && !b.textContent.trim() &&
+                        b.getBoundingClientRect().bottom > window.innerHeight * 0.5) ||
+      // Submit button fallback
       [...document.querySelectorAll('button[type="submit"]:not([disabled])')].pop();
 
     if (sendBtn && !sendBtn.disabled) {
+      // Full click simulation so React's synthetic event fires
+      sendBtn.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
+      sendBtn.dispatchEvent(new MouseEvent("mouseup",   { bubbles: true, cancelable: true }));
       sendBtn.click();
       sendResponse({ ok: true });
-    } else {
-      // Last resort: simulate Enter key on the editor
-      editor.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
-      sendResponse({ ok: true, fallback: true });
+      return;
     }
-  }, 120);
 
+    if (attempt < 3) {
+      setTimeout(() => trySend(attempt + 1), attempt * 300 + 200);
+      return;
+    }
+
+    // Final fallback: try submitting the form, then Enter key
+    const form = editor.closest("form");
+    if (form) {
+      try { form.requestSubmit(); sendResponse({ ok: true, fallback: "form" }); return; }
+      catch (_) {}
+    }
+    editor.dispatchEvent(new KeyboardEvent("keydown", {
+      key: "Enter", code: "Enter", bubbles: true, cancelable: true
+    }));
+    sendResponse({ ok: true, fallback: "enter" });
+  }
+
+  setTimeout(() => trySend(0), 150);
   return true; // async response
 });
 
