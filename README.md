@@ -8,7 +8,7 @@ Works with:
 • Claude Web (browser)
 • Claude Code (CLI)
 
-![Dashboard preview: large animated speedometer showing 420 tokens/min, gas gauge at 38% used, "3.8 days remaining at current pace"](docs/screenshot-placeholder.png)
+![Dashboard preview: Live ClaudePacer showing 319.5k tokens/min burn rate, 51% weekly budget remaining, session stats, and real-time usage tracking](website/assets/img/home-preview.png)
 
 ---
 
