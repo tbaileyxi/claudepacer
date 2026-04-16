@@ -606,13 +606,7 @@ function initOnboarding() {
   const overlay = document.getElementById("onboarding");
 
   chrome.storage.local.get("cp_onboarded", (r) => {
-    console.log("Onboarding check:", r);
-    // Always show onboarding for now during testing
-    if (r.cp_onboarded && r.cp_onboarded === true) {
-      console.log("Already onboarded");
-      return; // already done
-    }
-    console.log("Showing onboarding");
+    if (r.cp_onboarded) return; // already done
     overlay.classList.remove("hidden");
   });
 
@@ -1093,16 +1087,14 @@ function init() {
   // ── Reconnect buttons — re-inject interceptor into all open claude.ai tabs ───
   function doReconnect(btn) {
     const orig = btn.textContent;
-    btn.textContent = "Reconnecting...";
+    btn.textContent = "Reconnecting…";
     btn.disabled = true;
-    console.log("Reconnect button clicked");
     chrome.runtime.sendMessage({ type: "RECONNECT" }, (res) => {
-      console.log("Reconnect response:", res);
       setTimeout(() => {
         if (res?.didInject === false) {
           btn.textContent = "Open claude.ai first";
         } else {
-          btn.textContent = "Connected! Send a message to test";
+          btn.textContent = "✓ Done — send a message to test";
         }
         setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
       }, 800);

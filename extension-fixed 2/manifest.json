@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ClaudePacer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stop driving Claude without a speedometer. See your live burn rate and weekly budget at a glance.",
 
   "icons": {

@@ -425,6 +425,13 @@ function render(stats) {
     srcBridge.classList.toggle("hidden",  !showBridge);
     // Show "Connect Desktop" CTA whenever bridge is not connected
     if (bridgeCTA) bridgeCTA.classList.toggle("hidden", showBridge);
+    
+    // Show "Claude Code Connect" button when bridge is not connected and user has browser activity
+    const claudeCodeCTA = document.getElementById("btn-connect-claude-code");
+    if (claudeCodeCTA) {
+      const showClaudeCodeCTA = !showBridge && showBrowser;
+      claudeCodeCTA.classList.toggle("hidden", !showClaudeCodeCTA);
+    }
 
     // Interceptor warning — show when browser interceptor hasn't reported in > 60s
     // (means extension may need reconnecting after a reload)
@@ -974,7 +981,7 @@ function init() {
   modal.addEventListener("click", (e) => { if (e.target === modal) closeUpgradeModal(); });
 
   // Square payment processing
-  const squarePaymentUrl:(function(){try{return atob(chrome.storage.local.getItem("cp_u")||"")}catch(e){return""}})();
+  const squarePaymentUrl = (function(){try{return atob(chrome.storage.local.getItem("cp_u")||"")}catch(e){return""}})();
   
   document.getElementById("modal-notify").addEventListener("click", () => {
     const email = document.getElementById("modal-email").value.trim();
@@ -1122,8 +1129,19 @@ function init() {
 
   // "Connect Desktop" button in source bar — opens the bridge setup screen
   const btnStartBridge = document.getElementById("btn-start-bridge");
+  const btnConnectClaudeCode = document.getElementById("btn-connect-claude-code");
+  
   if (btnStartBridge) {
     btnStartBridge.addEventListener("click", () => {
+      const overlay = document.getElementById("onboarding");
+      overlay.querySelectorAll(".onboard-screen").forEach(s => s.classList.add("hidden"));
+      document.getElementById("ob-screen-2b").classList.remove("hidden");
+      overlay.classList.remove("hidden");
+    });
+  }
+
+  if (btnConnectClaudeCode) {
+    btnConnectClaudeCode.addEventListener("click", () => {
       const overlay = document.getElementById("onboarding");
       overlay.querySelectorAll(".onboard-screen").forEach(s => s.classList.add("hidden"));
       document.getElementById("ob-screen-2b").classList.remove("hidden");

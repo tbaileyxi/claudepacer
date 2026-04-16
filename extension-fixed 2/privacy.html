@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClaudePacer Privacy Policy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #D97757;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 16px;
+      color: #666;
+    }
+    
+    .content {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin: 30px 0 15px 0;
+      border-bottom: 2px solid #D97757;
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 20px 0 10px 0;
+    }
+    
+    p {
+      margin-bottom: 15px;
+      color: #555;
+    }
+    
+    ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+    
+    li {
+      margin-bottom: 8px;
+      color: #555;
+    }
+    
+    .highlight {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #D97757;
+      margin: 20px 0;
+    }
+    
+    .contact {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+    
+    .last-updated {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>ClaudePacer Privacy Policy</h1>
+      <p>Protecting your privacy while you optimize your Claude usage</p>
+    </div>
+    
+    <div class="content">
+      <h2>Overview</h2>
+      <p>ClaudePacer is a Chrome extension that helps you monitor and optimize your Claude.ai token usage. We are committed to protecting your privacy and being transparent about the data we collect and how we use it.</p>
+      
+      <div class="highlight">
+        <strong>Important:</strong> ClaudePacer processes all data locally on your device. We do not collect, store, or transmit your Claude conversations or personal information to our servers.
+      </div>
+      
+      <h2>Data We Collect</h2>
+      
+      <h3>Token Usage Data</h3>
+      <p>To provide the speedometer and gas gauge functionality, we collect:</p>
+      <ul>
+        <li>Token counts from your Claude.ai requests and responses</li>
+        <li>Timing information for burn rate calculations</li>
+        <li>Weekly and session usage totals</li>
+        <li>Usage limits and reset times (scraped from your Claude settings)</li>
+      </ul>
+      
+      <h3>Local Storage</h3>
+      <p>All data is stored locally in your browser's chrome.storage.local:</p>
+      <ul>
+        <li>Usage statistics and calculations</li>
+        <li>Settings and preferences</li>
+        <li>Pro license status (if purchased)</li>
+        <li>Temporary email for waitlist (if provided)</li>
+      </ul>
+      
+      <h2>Data We Don't Collect</h2>
+      <ul>
+        <li><strong>Conversation content:</strong> We never access or store your actual Claude conversations</li>
+        <li><strong>Personal information:</strong> No names, emails, or identifiers (except waitlist email you voluntarily provide)</li>
+        <li><strong>API keys:</strong> We have no access to your Claude API keys</li>
+        <li><strong>Browsing history:</strong> We only monitor claude.ai for token interception</li>
+      </ul>
+      
+      <h2>How Data Is Processed</h2>
+      
+      <h3>Token Interception</h3>
+      <p>The extension intercepts network requests to claude.ai to extract token counts from:</p>
+      <ul>
+        <li>Request bodies (for input token estimation)</li>
+        <li>Streaming responses (for output token counting)</li>
+        <li>Usage page data (for calibration)</li>
+      </ul>
+      
+      <h3>Desktop Bridge (Optional)</h3>
+      <p>If you use Claude Code desktop app, you can optionally run a local bridge that:</p>
+      <ul>
+        <li>Runs on localhost (127.0.0.1) only</li>
+        <li>Reads local Claude log files</li>
+        <li>Sends token deltas to the extension</li>
+        <li>No data leaves your computer</li>
+      </ul>
+      
+      <h2>Payment Processing</h2>
+      <p>For Pro upgrades:</p>
+      <ul>
+        <li>Payments are processed through Square's secure platform</li>
+        <li>We receive only payment confirmation (no card details)</li>
+        <li>Pro status is stored locally in your browser</li>
+        <li>No payment information is stored by the extension</li>
+      </ul>
+      
+      <h2>Data Sharing</h2>
+      <p>We do not share, sell, or transfer your data to third parties, except:</p>
+      <ul>
+        <li>Payment processors for transaction processing (Square)</li>
+        <li>As required by law or legal process</li>
+      </ul>
+      
+      <h2>Data Security</h2>
+      <ul>
+        <li>All data is encrypted at rest in browser storage</li>
+        <li>No data is transmitted to external servers</li>
+        <li>Payment processing uses industry-standard security</li>
+        <li>Regular security updates and reviews</li>
+      </ul>
+      
+      <h2>Your Rights</h2>
+      <p>You have the right to:</p>
+      <ul>
+        <li>Access all locally stored data</li>
+        <li>Delete all extension data</li>
+        <li>Disable the extension at any time</li>
+        <li>Request data deletion (though no data is stored on our servers)</li>
+      </ul>
+      
+      <h2>Changes to This Policy</h2>
+      <p>We may update this privacy policy occasionally. Changes will be posted here and, if significant, communicated through the extension.</p>
+      
+      <h2>Chrome Web Store Requirements</h2>
+      <p>This privacy policy is maintained in compliance with Chrome Web Store developer policies.</p>
+      
+      <div class="contact">
+        <h3>Contact Us</h3>
+        <p>If you have questions about this privacy policy or ClaudePacer's data practices:</p>
+        <ul>
+          <li>Email: privacy@claudpacer.com</li>
+          <li>GitHub: https://github.com/claudpacer/claudpacer</li>
+          <li>Website: https://claudpacer.com</li>
+        </ul>
+      </div>
+      
+      <div class="last-updated">
+        Last updated: April 15, 2026
+      </div>
+    </div>
+  </div>
+</body>
+</html>

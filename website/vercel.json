@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/download",
+      "dest": "/download.html"
+    },
+    {
+      "src": "/pro",
+      "dest": "/pro.html"
+    },
+    {
+      "src": "/privacy",
+      "dest": "/privacy.html"
+    }
+  ]
+}

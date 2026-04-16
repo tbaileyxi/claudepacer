@@ -22,6 +22,7 @@ const os    = require("os");
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
+const BRIDGE_VERSION = "1.1.0";
 const PORT         = 7823;
 const PROJECTS_DIR = path.join(os.homedir(), ".claude", "projects");
 const POLL_MS      = 2_000;   // how often to scan for new JSONL bytes
@@ -42,6 +43,26 @@ let deltaOutput = 0;
 let deltaMsgs   = 0;
 
 const startedAt = Date.now();
+
+function findNewestSessionFile() {
+  let newestFile = null, newestMtime = 0;
+  let projectDirs = [];
+  try { projectDirs = fs.readdirSync(PROJECTS_DIR); } catch { return null; }
+  for (const dir of projectDirs) {
+    const full = path.join(PROJECTS_DIR, dir);
+    let entries;
+    try { entries = fs.readdirSync(full); } catch { continue; }
+    for (const entry of entries) {
+      if (!entry.endsWith(".jsonl")) continue;
+      const fp = path.join(full, entry);
+      try {
+        const st = fs.statSync(fp);
+        if (st.mtimeMs > newestMtime) { newestMtime = st.mtimeMs; newestFile = fp; }
+      } catch {}
+    }
+  }
+  return newestFile;
+}
 
 // ── JSONL scanner ─────────────────────────────────────────────────────────────
 
@@ -292,7 +313,20 @@ const server = http.createServer((req, res) => {
 
   if (req.url === "/health" && req.method === "GET") {
     res.writeHead(200);
-    res.end(JSON.stringify({ ok: true, uptime: Date.now() - startedAt }));
+    res.end(JSON.stringify({
+      ok: true,
+      uptime: Date.now() - startedAt,
+      startedAt,
+      version: BRIDGE_VERSION,
+      projectsDir: PROJECTS_DIR,
+      // Capabilities let the extension detect "old bridge" installs.
+      supports: {
+        tokens: true,
+        conversation: true,
+        stats: true,
+        dashboard: true,
+      },
+    }));
     return;
   }
 
@@ -302,25 +336,7 @@ const server = http.createServer((req, res) => {
   if (req.url?.startsWith("/conversation") && req.method === "GET") {
     const maxMsgs = 60; // last 60 messages is plenty for compression
     try {
-      // Find the most recently modified JSONL file across all projects
-      let newestFile = null, newestMtime = 0;
-      const dirs = fs.readdirSync(PROJECTS_DIR).catch?.() ?? (() => {
-        try { return fs.readdirSync(PROJECTS_DIR); } catch { return []; }
-      })();
-      const projectDirs = fs.readdirSync(PROJECTS_DIR);
-      for (const dir of projectDirs) {
-        const full = path.join(PROJECTS_DIR, dir);
-        let entries;
-        try { entries = fs.readdirSync(full); } catch { continue; }
-        for (const entry of entries) {
-          if (!entry.endsWith(".jsonl")) continue;
-          const fp = path.join(full, entry);
-          try {
-            const st = fs.statSync(fp);
-            if (st.mtimeMs > newestMtime) { newestMtime = st.mtimeMs; newestFile = fp; }
-          } catch {}
-        }
-      }
+      const newestFile = findNewestSessionFile();
       if (!newestFile) { res.writeHead(404); res.end(JSON.stringify({ error: "no sessions" })); return; }
 
       // Read all lines, extract user/assistant messages
@@ -352,6 +368,44 @@ const server = http.createServer((req, res) => {
       res.writeHead(500);
       res.end(JSON.stringify({ error: String(e) }));
     }
+    return;
+  }
+
+  // ── /write_memory — writes MEMORY.md into the active project folder ─────────
+  // Body: { text: string, archive?: boolean }
+  if (req.url === "/write_memory" && req.method === "POST") {
+    let body = "";
+    req.on("data", chunk => { body += chunk; if (body.length > 2_000_000) req.destroy(); });
+    req.on("end", () => {
+      try {
+        const j = JSON.parse(body || "{}");
+        const text = (j.text || "").toString();
+        const archive = j.archive !== false; // default true
+        if (!text.trim()) { res.writeHead(400); res.end(JSON.stringify({ error: "empty" })); return; }
+
+        const newestFile = findNewestSessionFile();
+        if (!newestFile) { res.writeHead(404); res.end(JSON.stringify({ error: "no sessions" })); return; }
+        const projectDir = path.dirname(newestFile);
+
+        const memPath = path.join(projectDir, "MEMORY.md");
+        fs.writeFileSync(memPath, text, "utf8");
+
+        let archivePath = null;
+        if (archive) {
+          const cpDir = path.join(projectDir, ".claudepacer");
+          try { fs.mkdirSync(cpDir, { recursive: true }); } catch {}
+          const ts = new Date().toISOString().replace(/[:.]/g, "-");
+          archivePath = path.join(cpDir, `memory-${ts}.md`);
+          fs.writeFileSync(archivePath, text, "utf8");
+        }
+
+        res.writeHead(200);
+        res.end(JSON.stringify({ ok: true, projectDir, memoryPath: memPath, archivePath }));
+      } catch (e) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: String(e) }));
+      }
+    });
     return;
   }
 

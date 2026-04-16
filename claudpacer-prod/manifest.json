@@ -62,5 +62,6 @@
     "http://127.0.0.1/*"
   ],
   
-  "homepage_url": "https://claudpacer.com"
+  "homepage_url": "https://claudpacer.com",
+  "privacy_policy": "https://claudpacer.com/privacy"
 }

@@ -54,11 +54,9 @@ chrome.contextMenus?.onClicked?.addListener((info) => {
 async function injectIntoOpenTabs() {
   try {
     const tabs = await chrome.tabs.query({ url: "https://claude.ai/*" });
-    console.log("Found claude.ai tabs:", tabs?.length || 0);
     if (!tabs || tabs.length === 0) return false;
     for (const tab of tabs) {
       if (!tab.id) continue;
-      console.log("Injecting into tab:", tab.id, tab.url);
       // CRITICAL ORDER: inject content.js FIRST so its window.addEventListener("message")
       // is registered before interceptor.js fires INTERCEPTOR_READY via postMessage.
       // Injecting in parallel (no await) loses the READY signal ~50% of the time.
@@ -68,24 +66,15 @@ async function injectIntoOpenTabs() {
           world:  "ISOLATED",
           files:  ["content.js"],
         });
-        console.log("Injected content.js into tab:", tab.id);
-      } catch (e) {
-        console.log("Failed to inject content.js:", e);
-      }
+      } catch (_) {}
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         world:  "MAIN",
         files:  ["interceptor.js"],
-      }).then(() => {
-        console.log("Injected interceptor.js into tab:", tab.id);
-      }).catch((e) => {
-        console.log("Failed to inject interceptor.js:", e);
-      });
+      }).catch(() => {});
     }
     return true;
-  } catch (e) {
-    console.log("injectIntoOpenTabs error:", e);
-  }
+  } catch (_) {}
   return false;
 }
 
@@ -366,11 +355,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
   // Sidepanel "Reconnect" button → re-inject into all open claude.ai tabs
   if (msg.type === "RECONNECT") {
-    console.log("Background received RECONNECT message");
-    injectIntoOpenTabs().then((didInject) => {
-      console.log("injectIntoOpenTabs result:", didInject);
-      sendResponse({ ok: true, didInject });
-    });
+    injectIntoOpenTabs().then((didInject) => sendResponse({ ok: true, didInject }));
     return true;
   }
 

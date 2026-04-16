@@ -10,6 +10,7 @@ PLIST_LABEL="com.claudepacer.bridge"
 PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_LABEL}.plist"
 BRIDGE_PATH="$HOME/Documents/ClaudePacer/claude-bridge/bridge.js"
 LOG_PATH="$HOME/Library/Logs/claudepacer-bridge.log"
+PORT="7823"
 
 echo ""
 echo "╔══════════════════════════════════════╗"
@@ -76,6 +77,19 @@ if launchctl list | grep -q "$PLIST_LABEL" 2>/dev/null; then
   launchctl unload "$PLIST_PATH" 2>/dev/null || true
 fi
 
+# ── Free the port if something is still listening ─────────────────────────────
+# Sometimes a previous node process survives and keeps 127.0.0.1:7823 in use,
+# causing the LaunchAgent to fail with EADDRINUSE and the extension to show
+# "Desktop Companion needs an update" indefinitely.
+if command -v lsof >/dev/null 2>&1; then
+  PID_ON_PORT=$(lsof -ti tcp:$PORT 2>/dev/null | head -n 1 || true)
+  if [ -n "$PID_ON_PORT" ]; then
+    echo "↻   Releasing port $PORT (PID $PID_ON_PORT)..."
+    kill "$PID_ON_PORT" 2>/dev/null || true
+    sleep 1
+  fi
+fi
+
 # ── Write plist ───────────────────────────────────────────────────────────────
 
 mkdir -p "$HOME/Library/LaunchAgents"
@@ -137,9 +151,10 @@ echo "║   The bridge now starts              ║"
 echo "║   automatically when you log in.     ║"
 echo "║   No Terminal window needed.         ║"
 echo "║                                      ║"
-echo "║   You'll see '🖥️ Claude Desktop' in   ║"
+echo "║   You'll see '⌨️ Claude Code' in      ║"
 echo "║   ClaudePacer Chrome panel when      ║"
-echo "║   it's active.                       ║"
+echo "║   it's active. (This tracks Claude   ║"
+echo "║   Code usage, not Desktop Chat.)     ║"
 echo "╚══════════════════════════════════════╝"
 echo ""
 read -p "Press Enter to close..."

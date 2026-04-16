@@ -1,5 +1,5 @@
 /**
- * ClaudePacer - Content Script v2
+ * ClaudePacer — Content Script
  * Runs on all claude.ai pages.
  *
  * 1. Relays token events from interceptor.js → background
@@ -19,9 +19,6 @@ window.__cpContentInjected = true;
 function _cpHandleInterceptorMsg(event) {
   if (event.source !== window) return;
   if (!event.data || event.data.source !== "CLAUDEPACER_INTERCEPTOR") return;
-
-  // Check if extension context is valid before sending messages
-  if (!chrome.runtime?.id) return;
 
   // Interceptor just (re-)patched fetch — tell background so sidepanel can show ✅
   if (event.data.type === "INTERCEPTOR_READY") {
@@ -152,16 +149,12 @@ if (window.__cpKeyListener) {
     if (e.key.length > 1 && !["Backspace","Delete"].includes(e.key)) return;
     if (!_isTyping) {
       _isTyping = true;
-      if (chrome.runtime?.id) {
-        chrome.runtime.sendMessage({ type: "TYPING_START" }).catch(() => {});
-      }
+      chrome.runtime.sendMessage({ type: "TYPING_START" }).catch(() => {});
     }
     clearTimeout(_stopTimer);
     _stopTimer = setTimeout(() => {
       _isTyping = false;
-      if (chrome.runtime?.id) {
-        chrome.runtime.sendMessage({ type: "TYPING_STOP" }).catch(() => {});
-      }
+      chrome.runtime.sendMessage({ type: "TYPING_STOP" }).catch(() => {});
     }, 1500);
   }
 
@@ -235,7 +228,6 @@ function scrapeUsagePage() {
 
   // Retry up to 3 times — extension reload can cause the first send to fail silently
   function sendWithRetry(attempts) {
-    if (!chrome.runtime?.id) return; // Extension context invalidated
     chrome.runtime.sendMessage(payload).catch(() => {
       if (attempts > 1) setTimeout(() => sendWithRetry(attempts - 1), 1000);
     });
@@ -258,14 +250,11 @@ function scrapeWithRetry(remaining) {
 scrapeWithRetry(8);
 
 // Watch for SPA navigation (claude.ai is a single-page app)
-// Use window property to avoid redeclaration on script reinjection
-if (typeof window._cpLastPath === 'undefined') {
-  window._cpLastPath = window.location.pathname;
-}
+let _lastPath = window.location.pathname;
 setInterval(() => {
   const path = window.location.pathname;
-  if (path !== window._cpLastPath) {
-    window._cpLastPath = path;
+  if (path !== _lastPath) {
+    _lastPath = path;
     setTimeout(() => scrapeWithRetry(5), 400);
   }
 }, 500);

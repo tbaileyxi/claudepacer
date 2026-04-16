@@ -53,6 +53,11 @@
     try {
       const url = typeof args[0] === "string" ? args[0]
                 : (args[0]?.url ?? args[0]?.href ?? String(args[0]));
+      
+      // Debug: Log all fetch requests to see what claude.ai is calling
+      if (url.includes("claude.ai") && (url.includes("/api/") || url.includes("chat_conversations") || url.includes("completion"))) {
+        console.log("ClaudePacer: Intercepted URL:", url, "Content-Type:", response.headers?.get("content-type"));
+      }
 
       const ct = response.headers?.get("content-type") || "";
 
