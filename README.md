@@ -2,7 +2,11 @@
 
 > **Stop driving Claude without a speedometer or gas gauge.**
 
-ClaudePacer is a beautiful, self-hosted dashboard that shows your live Claude burn rate and remaining weekly budget — so you always know how fast you're going and how much fuel you have left.
+See your token burn rate in real time, track your weekly budget, and avoid runaway costs.
+
+Works with:
+• Claude Web (browser)
+• Claude Code (CLI)
 
 ![Dashboard preview: large animated speedometer showing 420 tokens/min, gas gauge at 38% used, "3.8 days remaining at current pace"](docs/screenshot-placeholder.png)
 
@@ -10,9 +14,10 @@ ClaudePacer is a beautiful, self-hosted dashboard that shows your live Claude bu
 
 ## Features
 
-| | Free | Pro ($29 lifetime) |
+| | Free | Pro ($19 lifetime) |
 |---|---|---|
 | Live speedometer (burn rate) | ✅ | ✅ |
+| Claude Web Browser & Claude Code (CLI) | ✅ | ✅ |
 | Weekly gas gauge + projection | ✅ | ✅ |
 | Session & cost stats | ✅ | ✅ |
 | Referral link | ✅ | ✅ |
